@@ -23,7 +23,7 @@ def test_health_endpoint(client):
     assert res.status_code == 200
     data = res.get_json()
     assert data["status"] == "healthy"
-    assert data["service"] == "DocuFlex"
+    assert "iLovePDF" in data["service"]
     assert "capabilities" in data
     assert "native_features" in data["capabilities"]
 

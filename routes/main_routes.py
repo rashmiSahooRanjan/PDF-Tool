@@ -24,7 +24,7 @@ def health_check():
     caps = get_system_capabilities()
     return jsonify({
         "status": "healthy",
-        "service": "DocuFlex",
+        "service": "iLovePDF Pro",
         "version": "1.0.0",
         "capabilities": caps
     })

@@ -1,6 +1,6 @@
-# DocuFlex — All-in-One Local PDF Editor & Document Processing Platform
+# iLovePDF Pro — All-in-One Local PDF Editor & Document Processing Platform
 
-DocuFlex is a high-performance, privacy-first document processing platform built with **Python 3.10**, **Flask**, **PyMuPDF**, and **vanilla HTML5/CSS3/JavaScript**. All processing occurs **100% locally** on your machine with **zero cloud dependencies** and **no paid APIs**.
+iLovePDF Pro is a high-performance, privacy-first document processing platform built with **Python 3.10**, **Flask**, **PyMuPDF**, and **vanilla HTML5/CSS3/JavaScript**. All processing occurs **100% locally** on your machine with **zero cloud dependencies** and **no paid APIs**.
 
 ---
 
@@ -47,7 +47,7 @@ DocuFlex is a high-performance, privacy-first document processing platform built
 - **Searchable PDF:** Generates PDF with an invisible selectable OCR text layer.
 - **Language Selection:** Auto-detects installed Tesseract language packs (`eng`, etc.).
 
-### 5. Interactive DocuFlex Assistant Chatbot
+### 5. Interactive iLovePDF Pro Assistant Chatbot
 - **Intelligent Offline Guide:** Embedded floating AI assistant widget available on all pages.
 - **Complete Project Explanations:** Explains every single tool, document conversion pipeline, visual editing redactions, OCR workflows, and security features.
 - **Live System Status:** Informs users about active Python runtime, local engines (MS Office COM, LibreOffice, RapidOCR, Tesseract), and offline privacy.
@@ -88,7 +88,7 @@ cd "d:\PDF project"
 ```
 *(If PowerShell restricts script execution, run: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`)*
 
-### 3. Start the DocuFlex Server
+### 3. Start the iLovePDF Pro Server
 ```powershell
 python app.py
 ```
@@ -110,7 +110,7 @@ http://127.0.0.1:5000
 ### 1. Tesseract OCR (For Offline OCR Studio)
 1. Download the Windows installer from [UB-Mannheim Tesseract](https://github.com/UB-Mannheim/tesseract/wiki).
 2. Install to the default directory: `C:\Program Files\Tesseract-OCR`.
-3. DocuFlex will automatically detect it. Alternatively, set an environment variable:
+3. iLovePDF Pro will automatically detect it. Alternatively, set an environment variable:
    ```powershell
    $env:TESSERACT_PATH = "C:\Program Files\Tesseract-OCR\tesseract.exe"
    ```
@@ -118,7 +118,7 @@ http://127.0.0.1:5000
 ### 2. LibreOffice (For Office-to-PDF Conversions)
 1. Download LibreOffice from [libreoffice.org](https://www.libreoffice.org/download/download/).
 2. Install to the default path: `C:\Program Files\LibreOffice\program\soffice.exe`.
-3. DocuFlex automatically detects LibreOffice. Alternatively, set an environment variable:
+3. iLovePDF Pro automatically detects LibreOffice. Alternatively, set an environment variable:
    ```powershell
    $env:LIBREOFFICE_PATH = "C:\Program Files\LibreOffice\program\soffice.exe"
    ```
@@ -141,15 +141,15 @@ All automated tests are written with `pytest` and verify conversions, security s
 ## 📝 Word-Like PDF Editor Usage & Realistic Limitations
 
 1. **Direct In-Place Editing vs Fixed Layout**:
-   - Standard PDF files store text as fixed absolute-coordinate positioning operators (`TJ`/`Tj`). When replacing words, DocuFlex automatically adjusts the line bounding box. If replacement text is significantly longer than original text, line-wrapping within the box will occur or text will overflow its original column.
+   - Standard PDF files store text as fixed absolute-coordinate positioning operators (`TJ`/`Tj`). When replacing words, iLovePDF Pro automatically adjusts the line bounding box. If replacement text is significantly longer than original text, line-wrapping within the box will occur or text will overflow its original column.
 2. **Word Reflow Mode**:
-   - For contracts, books, and articles that require paragraph-level text reflowing across pages, click the **Word Reflow Mode** button. DocuFlex will convert the PDF into an editable Word document structure (`.docx`), allow fluid editing of paragraphs, and recompile back to PDF via LibreOffice / MS Office.
+   - For contracts, books, and articles that require paragraph-level text reflowing across pages, click the **Word Reflow Mode** button. iLovePDF Pro will convert the PDF into an editable Word document structure (`.docx`), allow fluid editing of paragraphs, and recompile back to PDF via LibreOffice / MS Office.
 3. **Genuine Stream Redaction**:
-   - When text is deleted or replaced, DocuFlex applies authentic PyMuPDF redaction annotations (`add_redact_annot()` and `apply_redactions()`). The original characters are permanently expunged from the binary stream.
+   - When text is deleted or replaced, iLovePDF Pro applies authentic PyMuPDF redaction annotations (`add_redact_annot()` and `apply_redactions()`). The original characters are permanently expunged from the binary stream.
 4. **Standard 14 PDF Base Fonts & Fallbacks**:
-   - PyMuPDF natively writes the standard PDF Base 14 fonts: **Helvetica**, **Times-Roman**, and **Courier** with full support for Bold, Italic, and Underline. If a document contains proprietary embedded fonts, DocuFlex detects them and honestly informs the user that standard fallback rendering is utilized.
+   - PyMuPDF natively writes the standard PDF Base 14 fonts: **Helvetica**, **Times-Roman**, and **Courier** with full support for Bold, Italic, and Underline. If a document contains proprietary embedded fonts, iLovePDF Pro detects them and honestly informs the user that standard fallback rendering is utilized.
 5. **Scanned PDF OCR Assist**:
-   - If an opened page has no selectable text (scanned flat imagery), DocuFlex shows an automatic banner allowing the user to run the offline OCR engine (`RapidOCR` / `Tesseract`) in one click, generating a searchable PDF with selectable and editable text.
+   - If an opened page has no selectable text (scanned flat imagery), iLovePDF Pro shows an automatic banner allowing the user to run the offline OCR engine (`RapidOCR` / `Tesseract`) in one click, generating a searchable PDF with selectable and editable text.
 
 ## 📁 Project Architecture
 
