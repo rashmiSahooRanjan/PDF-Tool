@@ -147,4 +147,93 @@ document.addEventListener("DOMContentLoaded", () => {
   mobileNavLinks.forEach(link => {
     link.addEventListener("click", closeMobileDrawer);
   });
+
+  // 4. PWA Installation & Service Worker Integration
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/static/sw.js')
+        .then(reg => console.log('PWA ServiceWorker registered with scope:', reg.scope))
+        .catch(err => console.warn('PWA ServiceWorker registration failed:', err));
+    });
+  }
+
+  let deferredPrompt = null;
+  const pwaInstallBtn = document.getElementById('pwa-install-btn');
+  const mobileInstallBtn = document.getElementById('mobile-drawer-install-btn');
+  const pwaMobileBanner = document.getElementById('pwa-mobile-banner');
+  const pwaBannerInstall = document.getElementById('pwa-banner-install');
+  const pwaBannerClose = document.getElementById('pwa-banner-close');
+
+  const isIos = () => {
+    const userAgent = window.navigator.userAgent.toLowerCase();
+    return /iphone|ipad|ipod/.test(userAgent);
+  };
+
+  const isInStandaloneMode = () => {
+    return ('standalone' in window.navigator && window.navigator.standalone) ||
+           (window.matchMedia('(display-mode: standalone)').matches);
+  };
+
+  function triggerPwaInstall() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          showToast('iLovePDF Pro App installed successfully!', 'success');
+        }
+        deferredPrompt = null;
+        if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+        if (pwaMobileBanner) pwaMobileBanner.style.display = 'none';
+      });
+    } else if (isIos() && !isInStandaloneMode()) {
+      const iosModal = document.getElementById('ios-install-modal');
+      if (iosModal) {
+        iosModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+    } else {
+      showToast('To install, tap your browser menu (⋮) and select "Add to Home screen" or "Install App".', 'info', 6000);
+    }
+  }
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    if (pwaInstallBtn) pwaInstallBtn.style.display = 'inline-flex';
+    if (mobileInstallBtn) mobileInstallBtn.style.display = 'inline-flex';
+
+    if (!sessionStorage.getItem('pwa_banner_dismissed') && !isInStandaloneMode()) {
+      if (pwaMobileBanner) pwaMobileBanner.style.display = 'flex';
+    }
+  });
+
+  window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    if (pwaInstallBtn) pwaInstallBtn.style.display = 'none';
+    if (pwaMobileBanner) pwaMobileBanner.style.display = 'none';
+    showToast('🎉 Welcome to iLovePDF Pro Mobile App!', 'success');
+  });
+
+  if (pwaInstallBtn) pwaInstallBtn.addEventListener('click', triggerPwaInstall);
+  if (mobileInstallBtn) mobileInstallBtn.addEventListener('click', () => {
+    closeMobileDrawer();
+    triggerPwaInstall();
+  });
+  if (pwaBannerInstall) pwaBannerInstall.addEventListener('click', triggerPwaInstall);
+  if (pwaBannerClose) {
+    pwaBannerClose.addEventListener('click', () => {
+      if (pwaMobileBanner) pwaMobileBanner.style.display = 'none';
+      sessionStorage.setItem('pwa_banner_dismissed', '1');
+    });
+  }
+
+  // On iOS, if not in standalone, show the install buttons
+  if (isIos() && !isInStandaloneMode()) {
+    if (pwaInstallBtn) pwaInstallBtn.style.display = 'inline-flex';
+    if (mobileInstallBtn) mobileInstallBtn.style.display = 'inline-flex';
+    if (!sessionStorage.getItem('pwa_banner_dismissed') && pwaMobileBanner) {
+      pwaMobileBanner.style.display = 'flex';
+    }
+  }
 });

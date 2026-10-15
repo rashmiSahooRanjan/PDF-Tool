@@ -1,0 +1,62 @@
+{
+  "name": "iLovePDF Pro — All-in-One Local PDF Suite",
+  "short_name": "iLovePDF",
+  "description": "Complete 33-tool professional PDF & document editor, converter, OCR and security suite.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#090D16",
+  "theme_color": "#0F172A",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/static/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/static/icons/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "PDF Visual Editor",
+      "short_name": "Editor",
+      "description": "Edit text, annotate, and sign PDFs directly",
+      "url": "/editor",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Document Converter",
+      "short_name": "Convert",
+      "description": "Convert PDF to Word, Excel, PPTX, and Office to PDF",
+      "url": "/convert",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "PDF Utilities",
+      "short_name": "Utilities",
+      "description": "Merge, split, rotate, and protect PDFs",
+      "url": "/utilities",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "OCR Studio",
+      "short_name": "OCR",
+      "description": "Extract text and create searchable PDFs",
+      "url": "/ocr",
+      "icons": [{ "src": "/static/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

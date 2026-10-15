@@ -67,7 +67,11 @@ def test_static_assets_exist(client):
         "/static/js/app.js",
         "/static/js/editor.js",
         "/static/js/chat.js",
-        "/static/js/theme.js"
+        "/static/js/theme.js",
+        "/static/manifest.json",
+        "/static/sw.js",
+        "/static/icons/icon-192.png",
+        "/static/icons/icon-512.png"
     ]
     for asset in assets:
         res = client.get(asset)
