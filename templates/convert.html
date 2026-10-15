@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}Document Conversion Studio — DocuFlex{% endblock %}
+
+{% block content %}
+<div class="main-content">
+  <div style="text-align:center;margin-bottom:36px;">
+    <h1 style="font-size:2.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:10px;">
+      Document <span class="gradient-text">Conversion Studio</span>
+    </h1>
+    <p style="color:var(--text-muted);max-width:640px;margin:0 auto;">
+      Convert PDF and Office documents between formats locally. High fidelity, fast processing, and 100% offline security.
+    </p>
+  </div>
+
+  <!-- Dedicated Dropzone -->
+  <div id="main-dropzone" class="upload-card">
+    <input type="file" id="file-input" style="display:none;" multiple accept=".pdf,.docx,.xlsx,.pptx,.png,.jpg,.jpeg">
+    <div class="upload-icon-wrap">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="17 1 21 5 17 9"></polyline>
+        <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+        <polyline points="7 23 3 19 7 15"></polyline>
+        <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+      </svg>
+    </div>
+    <h3 class="upload-title">Drop your document here to convert</h3>
+    <p class="upload-hint">Upload PDF, Word, Excel, PowerPoint, or Image files</p>
+    <button class="btn-upload" onclick="document.getElementById('file-input').click()">
+      Select Document
+    </button>
+  </div>
+
+  <!-- File Preview Card -->
+  <div id="file-preview-card" class="file-preview-card">
+    <div class="file-preview-header">
+      <div class="file-meta-group">
+        <div class="file-icon-box">📄</div>
+        <div class="file-details">
+          <h4 id="preview-file-title">document.pdf</h4>
+          <p id="preview-file-meta">Ready for conversion</p>
+        </div>
+      </div>
+      <button onclick="clearCurrentFile()" class="btn btn-secondary btn-sm">Change File</button>
+    </div>
+  </div>
+
+  <!-- Conversion Targets Grid -->
+  <div class="section-header">
+    <h2 class="section-title">Select Target Format</h2>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tool-card" onclick="selectTool('pdf-to-word')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-blue">📘</div>
+        <span class="tool-badge">DOCX</span>
+      </div>
+      <h3 class="tool-title">PDF to Word</h3>
+      <p class="tool-desc">Full formatting and text extraction into editable DOCX document.</p>
+      <div class="tool-arrow">Convert to DOCX &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('pdf-to-pptx')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-amber">📊</div>
+        <span class="tool-badge">PPTX</span>
+      </div>
+      <h3 class="tool-title">PDF to PowerPoint</h3>
+      <p class="tool-desc">Visual or editable presentation slides with layout reconstruction.</p>
+      <div class="tool-arrow">Convert to PPTX &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('pdf-to-excel')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-emerald">📗</div>
+        <span class="tool-badge">XLSX</span>
+      </div>
+      <h3 class="tool-title">PDF to Excel</h3>
+      <p class="tool-desc">Extract tabular data and grids into formatted worksheets.</p>
+      <div class="tool-arrow">Convert to XLSX &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('pdf-to-png')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-rose">🖼️</div>
+        <span class="tool-badge">PNG</span>
+      </div>
+      <h3 class="tool-title">PDF to PNG Images</h3>
+      <p class="tool-desc">Ultra high-resolution page rendering, packed as ZIP for multiple pages.</p>
+      <div class="tool-arrow">Convert to PNG &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('images-to-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-cyan">📸</div>
+        <span class="tool-badge">PDF</span>
+      </div>
+      <h3 class="tool-title">Images to PDF</h3>
+      <p class="tool-desc">Combine multiple JPG, JPEG, and PNG images into a PDF.</p>
+      <div class="tool-arrow">Create PDF &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('docx-to-excel')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-emerald">📑</div>
+        <span class="tool-badge">XLSX</span>
+      </div>
+      <h3 class="tool-title">Word Tables to Excel</h3>
+      <p class="tool-desc">Scans Word document and extracts all tables into an Excel workbook.</p>
+      <div class="tool-arrow">Extract Tables &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('docx-to-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-blue">📄</div>
+        <span class="tool-badge">LibreOffice</span>
+      </div>
+      <h3 class="tool-title">DOCX / XLSX to PDF</h3>
+      <p class="tool-desc">Native Office document rendering via local headless LibreOffice.</p>
+      <div class="tool-arrow">Convert to PDF &rarr;</div>
+    </div>
+  </div>
+</div>
+
+<!-- Option modals included from dashboard -->
+<div id="pptx-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">PDF to PowerPoint Options</h3>
+      <button onclick="closeModal('pptx-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Conversion Strategy:</label>
+      <select id="pptx-mode-select" class="form-select">
+        <option value="visual">Visual Mode (Sharp full-slide fidelity)</option>
+        <option value="editable">Editable Mode (Reconstructs text boxes & elements)</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('pptx-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="startConversion('pptx', { mode: document.getElementById('pptx-mode-select').value })" class="btn btn-primary">Start Conversion</button>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

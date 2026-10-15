@@ -1,0 +1,517 @@
+{% extends "base.html" %}
+
+{% block title %}Professional PDF Editor — DocuFlex{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/editor.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="editor-wrapper">
+  <!-- Top Editor Bar -->
+  <header class="editor-navbar">
+    <div class="editor-doc-meta">
+      <button id="toggle-sidebar-btn" class="btn btn-secondary btn-icon" title="Toggle Sidebar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+      </button>
+      <div id="editor-filename" class="editor-filename">Loading Document...</div>
+      <div class="editor-page-counter">
+        <button id="btn-prev-page" class="btn-icon" title="Previous Page" style="width:24px;height:24px;">◀</button>
+        <span id="page-indicator">1 / 1</span>
+        <button id="btn-next-page" class="btn-icon" title="Next Page" style="width:24px;height:24px;">▶</button>
+      </div>
+    </div>
+
+    <!-- Zoom & History Controls -->
+    <div class="editor-zoom-controls">
+      <button id="btn-undo" class="btn btn-secondary btn-icon" title="Undo (Ctrl+Z)" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+      </button>
+      <button id="btn-redo" class="btn btn-secondary btn-icon" title="Redo (Ctrl+Y)" disabled>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+      </button>
+      
+      <div class="toolbar-divider"></div>
+
+      <button id="btn-zoom-out" class="btn btn-secondary btn-icon" title="Zoom Out">−</button>
+      <span id="zoom-level" style="font-size:0.85rem;font-weight:700;min-width:44px;text-align:center;">100%</span>
+      <button id="btn-zoom-in" class="btn btn-secondary btn-icon" title="Zoom In">+</button>
+      <button id="btn-zoom-fit" class="btn btn-secondary btn-sm" title="Fit to Width">Fit</button>
+    </div>
+
+    <!-- Right Header Actions: Reflow Mode, Compare, Save -->
+    <div style="display:flex;align-items:center;gap:8px;">
+      <button id="btn-open-compare" class="btn btn-secondary btn-sm" title="Compare edits against original PDF">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="8" height="18" rx="1"></rect><rect x="14" y="3" width="8" height="18" rx="1"></rect></svg>
+        Compare
+      </button>
+
+      <button id="btn-open-reflow" class="btn btn-secondary btn-sm" title="Switch to fluid paragraph reflow mode">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="6" x2="3" y2="6"></line><line x1="15" y1="12" x2="3" y2="12"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+        Word Reflow Mode
+      </button>
+
+      <button id="btn-save-pdf" class="btn btn-primary btn-sm">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+        Save & Download
+      </button>
+    </div>
+  </header>
+
+  <!-- Professional Word-Like Subtoolbar -->
+  <div class="editor-toolbar">
+    <!-- Tool Modes -->
+    <button class="tool-btn active" data-tool="select" title="Cursor / Select">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z"></path></svg>
+      Select
+    </button>
+
+    <button class="tool-btn" data-tool="inspect_text" title="Direct Click & Edit Existing Text in PDF" style="color:var(--accent-cyan);font-weight:700;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7V4h16v3M9 20h6M12 4v16"/></svg>
+      Edit Text
+    </button>
+
+    <button class="tool-btn" data-tool="textbox" title="Insert Draggable & Resizable Text Box">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" stroke-dasharray="2 2"></rect><polyline points="7 9 12 9 12 17"></polyline><line x1="9" y1="17" x2="15" y2="17"></line></svg>
+      Text Box
+    </button>
+
+    <button class="tool-btn" data-tool="draw" title="Freehand Pen">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19l7-7 3 3-7 7-3-3z"></path><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path></svg>
+      Pen
+    </button>
+
+    <button class="tool-btn" data-tool="highlight" title="Highlight Text Region">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 11-6 6v3h3l6-6"></path><path d="m22 2-7.5 7.5"></path></svg>
+      Highlight
+    </button>
+
+    <button class="tool-btn" data-tool="shape_rect" title="Rectangle Shape">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+      Rectangle
+    </button>
+
+    <button class="tool-btn" data-tool="shape_circle" title="Circle Shape">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle></svg>
+      Circle
+    </button>
+
+    <button class="tool-btn" data-tool="signature" title="Digital Signature Pad">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m14 12-8.5 8.5a2.12 2.12 0 1 1-3-3L11 9"></path><path d="m18 11 3-3a2.83 2.83 0 1 0-4-4l-3 3"></path></svg>
+      Signature
+    </button>
+
+    <button class="tool-btn" data-tool="image" title="Insert Image / Stamp">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+      Image
+    </button>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- Word-Like Typography Controls -->
+    <div class="toolbar-picker" title="Font Family (Standard 14 Base PDF Fonts)">
+      <select id="editor-font-family" class="form-select" style="padding:4px 8px;font-size:0.8rem;width:125px;">
+        <option value="Helvetica" selected>Helvetica (Sans)</option>
+        <option value="Times-Roman">Times (Serif)</option>
+        <option value="Courier">Courier (Mono)</option>
+      </select>
+    </div>
+
+    <div class="toolbar-picker" title="Font Size">
+      <select id="editor-font-size" class="form-select" style="padding:4px 6px;font-size:0.8rem;width:58px;">
+        <option value="9">9</option>
+        <option value="10">10</option>
+        <option value="11">11</option>
+        <option value="12">12</option>
+        <option value="14" selected>14</option>
+        <option value="16">16</option>
+        <option value="18">18</option>
+        <option value="20">20</option>
+        <option value="24">24</option>
+        <option value="28">28</option>
+        <option value="32">32</option>
+        <option value="48">48</option>
+      </select>
+    </div>
+
+    <!-- Bold, Italic, Underline Toggles -->
+    <button id="btn-toggle-bold" class="tool-btn btn-format-toggle" title="Bold (B)" style="padding:4px 8px;font-weight:800;">B</button>
+    <button id="btn-toggle-italic" class="tool-btn btn-format-toggle" title="Italic (I)" style="padding:4px 8px;font-style:italic;">I</button>
+    <button id="btn-toggle-underline" class="tool-btn btn-format-toggle" title="Underline (U)" style="padding:4px 8px;text-decoration:underline;">U</button>
+
+    <!-- Paragraph Alignment -->
+    <button id="btn-align-left" class="tool-btn btn-format-toggle active" title="Align Left" style="padding:4px 6px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+    </button>
+    <button id="btn-align-center" class="tool-btn btn-format-toggle" title="Align Center" style="padding:4px 6px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="10" x2="6" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="18" y1="18" x2="6" y2="18"></line></svg>
+    </button>
+    <button id="btn-align-right" class="tool-btn btn-format-toggle" title="Align Right" style="padding:4px 6px;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="21" y1="10" x2="7" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="21" y1="18" x2="7" y2="18"></line></svg>
+    </button>
+
+    <div class="toolbar-picker" title="Text Color">
+      <input type="color" id="editor-active-color" value="#000000" style="width:24px;height:24px;border:none;background:none;cursor:pointer;">
+    </div>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- Search / Replace & Watermark -->
+    <button id="btn-open-find-replace" class="tool-btn" title="Find and Replace Text in PDF">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      Find & Replace
+    </button>
+
+    <button id="btn-open-watermark" class="tool-btn" title="Header, Footer, Page Numbers & Watermarks">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"></path></svg>
+      Watermark / Header
+    </button>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- Page Actions -->
+    <button id="btn-rotate-page" class="tool-btn" title="Rotate Current Page (+90°)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+      Rotate
+    </button>
+    <button id="btn-insert-blank-page" class="tool-btn" title="Insert Blank Page">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+      + Blank Page
+    </button>
+    <button id="btn-dup-page" class="tool-btn" title="Duplicate Page">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+      Duplicate
+    </button>
+    <button id="btn-delete-page" class="tool-btn" style="color:var(--accent-rose);" title="Delete Page">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+      Delete
+    </button>
+  </div>
+
+  <!-- Dynamic Scanned Document Alert Banner -->
+  <div id="scanned-doc-banner" class="scanned-alert-banner" style="display:none;">
+    <div style="display:flex;align-items:center;gap:10px;">
+      <span style="font-size:1.2rem;">⚠️</span>
+      <div>
+        <strong>Scanned PDF Detected:</strong> This page consists of flat scanned imagery with no selectable digital text.
+      </div>
+    </div>
+    <button id="btn-trigger-ocr-assist" class="btn btn-primary btn-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+      Run OCR & Enable Text Editing
+    </button>
+  </div>
+
+  <!-- Body: Thumbnails Sidebar + Center Stage -->
+  <div class="editor-body">
+    <!-- Thumbnails Sidebar -->
+    <div id="editor-sidebar" class="editor-sidebar">
+      <!-- Thumbnails injected via JS -->
+    </div>
+
+    <!-- Center Viewport -->
+    <div id="editor-viewport" class="editor-viewport">
+      <div id="page-stage-container" class="page-stage-container">
+        <!-- PDF.js background render -->
+        <canvas id="pdf-render-canvas"></canvas>
+        <!-- Annotation & Drawing canvas overlay -->
+        <canvas id="pdf-annotation-canvas"></canvas>
+        <!-- Interactive text spans overlay -->
+        <div id="text-span-layer"></div>
+        <!-- Movable text boxes layer -->
+        <div id="active-textbox-layer"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- 1. Text Replacement & In-Place Editing Modal -->
+<div id="text-replace-modal" class="modal-overlay">
+  <div class="modal-card" style="max-width:540px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Edit Existing PDF Text</h3>
+      <button onclick="closeModal('text-replace-modal')" class="modal-close-btn">&times;</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Original Extracted Text:</label>
+      <div id="replace-original-preview" class="span-preview-box"></div>
+      <div id="replace-font-detected" style="font-size:0.75rem;color:var(--text-dim);margin-top:4px;"></div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Replacement Text:</label>
+      <textarea id="replace-new-input" class="form-input" rows="3" placeholder="Type new text to replace..."></textarea>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Font Family:</label>
+        <select id="modal-replace-font" class="form-select">
+          <option value="Helvetica">Helvetica (Standard Sans)</option>
+          <option value="Times-Roman">Times-Roman (Standard Serif)</option>
+          <option value="Courier">Courier (Standard Mono)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Font Size (pt):</label>
+        <input type="number" id="replace-fontsize-input" class="form-input" value="12" min="6" max="72">
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;margin-bottom:12px;">
+      <div class="form-group">
+        <label class="form-label">Alignment:</label>
+        <select id="modal-replace-align" class="form-select">
+          <option value="left" selected>Left</option>
+          <option value="center">Center</option>
+          <option value="right">Right</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Text Color:</label>
+        <input type="color" id="replace-color-input" class="form-input" value="#000000" style="height:38px;padding:2px;">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Redact Fill:</label>
+        <input type="color" id="replace-bg-input" class="form-input" value="#FFFFFF" style="height:38px;padding:2px;" title="Background fill for redacted byte region">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:16px;margin-bottom:16px;font-size:0.85rem;">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" id="modal-replace-bold"> <strong>Bold (B)</strong>
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" id="modal-replace-italic"> <em>Italic (I)</em>
+      </label>
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" id="modal-replace-underline"> <u>Underline (U)</u>
+      </label>
+    </div>
+
+    <div style="font-size:0.8rem;color:var(--accent-amber);margin-bottom:16px;background:rgba(245, 158, 11, 0.08);padding:8px 12px;border-radius:var(--radius-sm);">
+      🛡️ <strong>Genuine PDF Redaction:</strong> Original character bytes are permanently purged from the document stream rather than merely overlaid.
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <button id="btn-delete-text-span" class="btn btn-secondary btn-sm" style="color:var(--accent-rose);">
+        Delete Text (Redact)
+      </button>
+
+      <div style="display:flex;gap:10px;">
+        <button onclick="closeModal('text-replace-modal')" class="btn btn-secondary">Cancel</button>
+        <button id="btn-confirm-replace" class="btn btn-primary">Apply Replacement</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Find and Replace Modal -->
+<div id="find-replace-modal" class="modal-overlay">
+  <div class="modal-card" style="max-width:500px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Find and Replace in PDF</h3>
+      <button onclick="closeModal('find-replace-modal')" class="modal-close-btn">&times;</button>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Find Text:</label>
+      <input type="text" id="find-input" class="form-input" placeholder="Text to search for...">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Replace With:</label>
+      <input type="text" id="replace-input" class="form-input" placeholder="Replacement text...">
+    </div>
+
+    <div style="display:flex;gap:16px;margin-bottom:16px;font-size:0.85rem;">
+      <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
+        <input type="checkbox" id="find-match-case"> Match Case
+      </label>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;">
+      <button onclick="closeModal('find-replace-modal')" class="btn btn-secondary">Cancel</button>
+      <button id="btn-exec-find-replace" class="btn btn-primary">Replace on Current Page</button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Watermark, Headers, Footers & Page Numbers Modal -->
+<div id="watermark-modal" class="modal-overlay">
+  <div class="modal-card" style="max-width:520px;">
+    <div class="modal-header">
+      <h3 class="modal-title">Headers, Footers & Watermarks</h3>
+      <button onclick="closeModal('watermark-modal')" class="modal-close-btn">&times;</button>
+    </div>
+
+    <!-- Tab Selection -->
+    <div style="display:flex;gap:8px;margin-bottom:16px;">
+      <button id="tab-btn-watermark" class="tab-btn active" onclick="switchWatermarkTab('watermark')">Diagonal Watermark</button>
+      <button id="tab-btn-headerfooter" class="tab-btn" onclick="switchWatermarkTab('headerfooter')">Header / Footer / Page Numbers</button>
+    </div>
+
+    <!-- Watermark Section -->
+    <div id="section-watermark">
+      <div class="form-group">
+        <label class="form-label">Watermark Text:</label>
+        <input type="text" id="wm-text-input" class="form-input" value="CONFIDENTIAL">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Opacity (0.1 - 0.9):</label>
+          <input type="range" id="wm-opacity-input" min="0.05" max="0.8" step="0.05" value="0.25">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Watermark Color:</label>
+          <input type="color" id="wm-color-input" class="form-input" value="#999999" style="height:38px;padding:2px;">
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button onclick="closeModal('watermark-modal')" class="btn btn-secondary">Cancel</button>
+        <button id="btn-apply-watermark" class="btn btn-primary">Apply Watermark to All Pages</button>
+      </div>
+    </div>
+
+    <!-- Header / Footer Section -->
+    <div id="section-headerfooter" style="display:none;">
+      <div class="form-group">
+        <label class="form-label">Text Template:</label>
+        <input type="text" id="hf-text-input" class="form-input" value="DocuFlex • Page {page} of {total}">
+        <span style="font-size:0.75rem;color:var(--text-dim);">Use <code>{page}</code> for current page and <code>{total}</code> for total page count.</span>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label class="form-label">Position:</label>
+          <select id="hf-pos-select" class="form-select">
+            <option value="footer_center" selected>Footer Center</option>
+            <option value="footer_right">Footer Right</option>
+            <option value="footer_left">Footer Left</option>
+            <option value="header_center">Header Center</option>
+            <option value="header_right">Header Right</option>
+            <option value="header_left">Header Left</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Font Size:</label>
+          <input type="number" id="hf-size-input" class="form-input" value="10" min="6" max="24">
+        </div>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button onclick="closeModal('watermark-modal')" class="btn btn-secondary">Cancel</button>
+        <button id="btn-apply-headerfooter" class="btn btn-primary">Apply to All Pages</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Word-Like Fluid Reflow Mode Modal -->
+<div id="word-reflow-modal" class="modal-overlay">
+  <div class="modal-card" style="max-width:850px;width:95vw;max-height:90vh;display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <div>
+        <h3 class="modal-title">Word-Like Reflow Editing Mode</h3>
+        <span style="font-size:0.8rem;color:var(--text-dim);">Reconstructs fixed PDF layout into reflowable paragraphs for natural text wrapping.</span>
+      </div>
+      <button onclick="closeModal('word-reflow-modal')" class="modal-close-btn">&times;</button>
+    </div>
+
+    <div style="background:rgba(99, 102, 241, 0.08);border:1px solid rgba(99, 102, 241, 0.2);padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:12px;font-size:0.82rem;color:var(--text-muted);">
+      💡 <strong>Honest Reflow Disclaimer:</strong> PDFs are fixed-coordinate display formats. Reflow Mode extracts paragraphs into an editable Word document structure and recompiles with LibreOffice / Microsoft Office. Best suited for reports, contracts, and articles.
+    </div>
+
+    <!-- Editable Paragraphs Container -->
+    <div id="reflow-paragraphs-list" style="flex:1;overflow-y:auto;padding:10px;background:var(--bg-tertiary);border-radius:var(--radius-sm);display:flex;flex-direction:column;gap:12px;">
+      <div style="text-align:center;padding:30px;color:var(--text-muted);">
+        Converting document and extracting editable paragraph stream...
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:10px;border-top:1px solid var(--border-subtle);">
+      <button id="btn-reflow-add-p" class="btn btn-secondary btn-sm">+ Add New Paragraph</button>
+      <div style="display:flex;gap:10px;">
+        <button onclick="closeModal('word-reflow-modal')" class="btn btn-secondary">Cancel</button>
+        <button id="btn-save-reflow" class="btn btn-primary">Recompile & Download Reflowed PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Original vs Edited Comparison Modal -->
+<div id="compare-modal" class="modal-overlay">
+  <div class="modal-card" style="max-width:980px;width:95vw;max-height:90vh;">
+    <div class="modal-header">
+      <h3 class="modal-title">Compare Original vs Edited PDF</h3>
+      <button onclick="closeModal('compare-modal')" class="modal-close-btn">&times;</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+      <div>
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;color:var(--accent-amber);">Original PDF (Page <span class="compare-current-page">1</span>)</div>
+        <div style="border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:#000;display:flex;justify-content:center;overflow:hidden;height:450px;">
+          <canvas id="compare-original-canvas" style="max-width:100%;max-height:100%;object-fit:contain;"></canvas>
+        </div>
+      </div>
+      <div>
+        <div style="font-weight:700;font-size:0.9rem;margin-bottom:6px;color:var(--accent-emerald);">Edited PDF (Page <span class="compare-current-page">1</span>)</div>
+        <div style="border:1px solid var(--border-subtle);border-radius:var(--radius-sm);background:#000;display:flex;justify-content:center;overflow:hidden;height:450px;">
+          <canvas id="compare-edited-canvas" style="max-width:100%;max-height:100%;object-fit:contain;"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Operations Audit Log -->
+    <div style="background:var(--bg-tertiary);padding:10px 14px;border-radius:var(--radius-sm);margin-bottom:12px;">
+      <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">Operations Audit List (<span id="compare-op-count">0</span> applied edits):</div>
+      <ul id="compare-op-list" style="font-size:0.8rem;color:var(--text-muted);max-height:90px;overflow-y:auto;padding-left:18px;">
+        <li>No edits recorded yet.</li>
+      </ul>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;">
+      <button onclick="closeModal('compare-modal')" class="btn btn-primary">Close Comparison</button>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Signature Drawing Modal -->
+<div id="signature-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Create Signature</h3>
+      <button onclick="closeModal('signature-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-muted);">Draw your signature in the box below using your mouse or touch screen.</p>
+    <div class="sig-canvas-wrap">
+      <canvas id="signature-canvas" width="480" height="180"></canvas>
+    </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <button id="btn-clear-sig" class="btn btn-secondary btn-sm">Clear Pad</button>
+      <div style="display:flex;gap:10px;">
+        <button onclick="closeModal('signature-modal')" class="btn btn-secondary">Cancel</button>
+        <button id="btn-apply-sig" class="btn btn-primary">Apply Signature</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hidden inputs for dynamic uploads -->
+<input type="file" id="editor-image-input" accept="image/png,image/jpeg" style="display:none;">
+<input type="file" id="editor-pdf-fallback-input" accept=".pdf" style="display:none;">
+
+{% endblock %}
+
+{% block extra_js %}
+<!-- Bundled local PDF.js -->
+<script src="{{ url_for('static', filename='vendor/pdfjs/pdf.min.js') }}"></script>
+<script>
+  pdfjsLib.GlobalWorkerOptions.workerSrc = "{{ url_for('static', filename='vendor/pdfjs/pdf.worker.min.js') }}";
+</script>
+<script src="{{ url_for('static', filename='js/editor.js') }}"></script>
+{% endblock %}

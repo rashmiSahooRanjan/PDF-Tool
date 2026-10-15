@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+
+{% block title %}PDF Utilities Suite — DocuFlex{% endblock %}
+
+{% block content %}
+<div class="main-content">
+  <div style="text-align:center;margin-bottom:36px;">
+    <h1 style="font-size:2.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:10px;">
+      PDF <span class="gradient-text">Utilities Suite</span>
+    </h1>
+    <p style="color:var(--text-muted);max-width:640px;margin:0 auto;">
+      Fast, lossless page organization, compression, security, watermarking, and document protection tools.
+    </p>
+  </div>
+
+  <!-- Dedicated Dropzone -->
+  <div id="main-dropzone" class="upload-card">
+    <input type="file" id="file-input" style="display:none;" multiple accept=".pdf">
+    <div class="upload-icon-wrap">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </div>
+    <h3 class="upload-title">Drop PDF documents here</h3>
+    <p class="upload-hint">Upload one or multiple PDF documents for utility processing</p>
+    <button class="btn-upload" onclick="document.getElementById('file-input').click()">
+      Select PDF Files
+    </button>
+  </div>
+
+  <!-- File Preview Card -->
+  <div id="file-preview-card" class="file-preview-card">
+    <div class="file-preview-header">
+      <div class="file-meta-group">
+        <div class="file-icon-box">📄</div>
+        <div class="file-details">
+          <h4 id="preview-file-title">document.pdf</h4>
+          <p id="preview-file-meta">Ready for processing</p>
+        </div>
+      </div>
+      <button onclick="clearCurrentFile()" class="btn btn-secondary btn-sm">Clear</button>
+    </div>
+  </div>
+
+  <!-- Utilities Grid -->
+  <div class="section-header">
+    <h2 class="section-title">Select Utility Action</h2>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tool-card" onclick="selectTool('merge-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-purple">🔀</div>
+        <span class="tool-badge">Merge</span>
+      </div>
+      <h3 class="tool-title">Merge PDFs</h3>
+      <p class="tool-desc">Combine multiple PDF files into one clean document.</p>
+      <div class="tool-arrow">Merge Files &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('split-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-rose">✂️</div>
+        <span class="tool-badge">Split</span>
+      </div>
+      <h3 class="tool-title">Split & Extract Pages</h3>
+      <p class="tool-desc">Extract specific page numbers or ranges (e.g. 1-3, 5, 8).</p>
+      <div class="tool-arrow">Split PDF &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('rotate-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-blue">🔄</div>
+        <span class="tool-badge">Rotate</span>
+      </div>
+      <h3 class="tool-title">Rotate Pages</h3>
+      <p class="tool-desc">Rotate pages clockwise by 90, 180, or 270 degrees.</p>
+      <div class="tool-arrow">Rotate &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('compress-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-amber">🗜️</div>
+        <span class="tool-badge">Compress</span>
+      </div>
+      <h3 class="tool-title">Compress PDF</h3>
+      <p class="tool-desc">Optimize stream data and downsample heavy images.</p>
+      <div class="tool-arrow">Compress &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('watermark-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-cyan">💧</div>
+        <span class="tool-badge">Watermark</span>
+      </div>
+      <h3 class="tool-title">Add Watermark</h3>
+      <p class="tool-desc">Overlay custom diagonal watermark text across all pages.</p>
+      <div class="tool-arrow">Watermark &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('page-numbers')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-purple">🔢</div>
+        <span class="tool-badge">Numbering</span>
+      </div>
+      <h3 class="tool-title">Page Numbers</h3>
+      <p class="tool-desc">Add customizable page numbering headers or footers.</p>
+      <div class="tool-arrow">Add Numbers &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('protect-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-rose">🔒</div>
+        <span class="tool-badge">Security</span>
+      </div>
+      <h3 class="tool-title">Protect with Password</h3>
+      <p class="tool-desc">Encrypt PDF with military-grade 128-bit AES user security.</p>
+      <div class="tool-arrow">Encrypt &rarr;</div>
+    </div>
+
+    <div class="tool-card" onclick="selectTool('unlock-pdf')">
+      <div class="tool-card-top">
+        <div class="tool-icon icon-emerald">🔓</div>
+        <span class="tool-badge">Unlock</span>
+      </div>
+      <h3 class="tool-title">Unlock PDF</h3>
+      <p class="tool-desc">Remove password security if authorized with password.</p>
+      <div class="tool-arrow">Unlock &rarr;</div>
+    </div>
+  </div>
+</div>
+
+<!-- Reusable modals -->
+<div id="split-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Split PDF Pages</h3>
+      <button onclick="closeModal('split-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Page Ranges to Extract:</label>
+      <input type="text" id="split-range-input" class="form-input" placeholder="e.g. 1-3, 5, 8-10" value="1">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('split-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitSplit()" class="btn btn-primary">Extract Pages</button>
+    </div>
+  </div>
+</div>
+
+<div id="rotate-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Rotate PDF</h3>
+      <button onclick="closeModal('rotate-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Rotation Angle:</label>
+      <select id="rotate-angle-select" class="form-select">
+        <option value="90">90° Clockwise</option>
+        <option value="180">180° Flip</option>
+        <option value="270">270° Counter-clockwise</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('rotate-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitRotate()" class="btn btn-primary">Rotate</button>
+    </div>
+  </div>
+</div>
+
+<div id="compress-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Compress PDF Document</h3>
+      <button onclick="closeModal('compress-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Compression Level:</label>
+      <select id="compress-level-select" class="form-select">
+        <option value="medium">Balanced (Recommended: ~100 DPI images)</option>
+        <option value="low">Low (Light size reduction, highest visual quality)</option>
+        <option value="high">High (Maximum size reduction, 72 DPI images)</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('compress-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitCompress()" class="btn btn-primary">Compress</button>
+    </div>
+  </div>
+</div>
+
+<div id="watermark-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Add Watermark</h3>
+      <button onclick="closeModal('watermark-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Watermark Text:</label>
+      <input type="text" id="watermark-text-input" class="form-input" value="CONFIDENTIAL">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Opacity (0.1 to 0.9):</label>
+      <input type="range" id="watermark-opacity-input" min="0.1" max="0.9" step="0.05" value="0.25" style="width:100%;">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Text Color:</label>
+      <input type="color" id="watermark-color-input" value="#94A3B8" class="form-input" style="height:44px;padding:4px;">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('watermark-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitWatermark()" class="btn btn-primary">Apply Watermark</button>
+    </div>
+  </div>
+</div>
+
+<div id="pagenum-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Add Page Numbers</h3>
+      <button onclick="closeModal('pagenum-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Format Template:</label>
+      <input type="text" id="pagenum-format-input" class="form-input" value="Page {page} of {total}">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Position:</label>
+      <select id="pagenum-position-select" class="form-select">
+        <option value="bottom-center">Bottom Center</option>
+        <option value="bottom-right">Bottom Right</option>
+        <option value="bottom-left">Bottom Left</option>
+        <option value="top-right">Top Right</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('pagenum-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitPageNumbers()" class="btn btn-primary">Add Page Numbers</button>
+    </div>
+  </div>
+</div>
+
+<div id="protect-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Password Protect PDF</h3>
+      <button onclick="closeModal('protect-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Choose Document Password:</label>
+      <input type="password" id="protect-password-input" class="form-input" placeholder="Enter secure password">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('protect-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitProtect()" class="btn btn-primary">Encrypt PDF</button>
+    </div>
+  </div>
+</div>
+
+<div id="unlock-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Unlock Protected PDF</h3>
+      <button onclick="closeModal('unlock-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Document Password:</label>
+      <input type="password" id="unlock-password-input" class="form-input" placeholder="Enter password to unlock">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('unlock-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitUnlock()" class="btn btn-primary">Unlock & Remove Password</button>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+  async function submitPageNumbers() {
+    const format = document.getElementById("pagenum-format-input").value;
+    const pos = document.getElementById("pagenum-position-select").value;
+    closeAllModals();
+    openJobProgressModal("Adding Page Numbers...");
+
+    try {
+      const res = await fetch("/api/pdf/page-numbers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          job_id: currentJobId,
+          format: format,
+          position: pos
+        })
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Page numbering failed.");
+      pollJobStatus(currentJobId);
+    } catch (err) {
+      updateJobError(err.message);
+    }
+  }
+</script>
+{% endblock %}

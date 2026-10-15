@@ -1,0 +1,548 @@
+/* ===================================================================
+   DocuFlex — PDF Editor Workspace Stylesheet
+   Canvas, Annotation Layers, Toolbars, Sidebars, Modals
+   =================================================================== */
+
+.editor-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg-primary);
+}
+
+/* Editor Header Bar */
+.editor-navbar {
+  height: 60px;
+  background: var(--bg-glass);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 100;
+  gap: 12px;
+}
+
+.editor-doc-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editor-filename {
+  font-weight: 700;
+  font-size: 0.95rem;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.editor-page-counter {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  background: var(--bg-surface);
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+}
+
+.editor-zoom-controls {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Editor Subtoolbar (Tool Palette) */
+.editor-toolbar {
+  height: 52px;
+  background: var(--bg-secondary);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 6px;
+  overflow-x: auto;
+  z-index: 90;
+}
+
+.tool-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.tool-btn:hover {
+  color: var(--text-main);
+  background: var(--bg-surface-hover);
+}
+
+.tool-btn.active {
+  color: #FFFFFF;
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border-subtle);
+  margin: 0 6px;
+  flex-shrink: 0;
+}
+
+/* Color & Size Pickers in Toolbar */
+.toolbar-picker {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.color-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: transform var(--transition-fast);
+}
+
+.color-dot:hover, .color-dot.active {
+  transform: scale(1.2);
+  border-color: #FFFFFF;
+}
+
+/* Main Body: Sidebar + Canvas Viewport */
+.editor-body {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 112px);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Left Page Thumbnails Sidebar */
+.editor-sidebar {
+  width: 240px;
+  background: var(--bg-glass);
+  border-right: 1px solid var(--border-subtle);
+  overflow-y: auto;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  flex-shrink: 0;
+  transition: transform var(--transition-normal);
+}
+
+.editor-sidebar.collapsed {
+  transform: translateX(-100%);
+  width: 0;
+  padding: 0;
+  border-right: none;
+}
+
+.thumbnail-card {
+  background: var(--bg-surface);
+  border: 2px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.thumbnail-card:hover {
+  border-color: var(--border-hover);
+  background: var(--bg-surface-hover);
+}
+
+.thumbnail-card.active {
+  border-color: var(--primary);
+  box-shadow: 0 0 12px var(--primary-glow);
+}
+
+.thumbnail-canvas {
+  width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  background: #FFFFFF;
+}
+
+.thumbnail-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+
+/* Center Canvas Viewport */
+.editor-viewport {
+  flex: 1;
+  background: var(--bg-primary);
+  overflow: auto;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 32px 16px;
+  position: relative;
+  user-select: none;
+}
+
+.page-stage-container {
+  position: relative;
+  box-shadow: var(--shadow-lg);
+  border-radius: 4px;
+  background: #FFFFFF;
+  margin: auto;
+}
+
+#pdf-render-canvas {
+  display: block;
+}
+
+#pdf-annotation-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  cursor: crosshair;
+}
+
+#pdf-annotation-canvas.select-mode {
+  cursor: default;
+}
+
+#pdf-annotation-canvas.text-mode {
+  cursor: text;
+}
+
+/* Interactive Text Span Layer for Existing Text Editing */
+#text-span-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.interactive-span {
+  position: absolute;
+  cursor: pointer;
+  pointer-events: auto;
+  border-radius: 2px;
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px dashed rgba(99, 102, 241, 0.35);
+  transition: all var(--transition-fast);
+}
+
+.interactive-span:hover {
+  background: rgba(99, 102, 241, 0.25);
+  border-color: var(--primary);
+  box-shadow: 0 0 6px var(--primary-glow);
+}
+
+.interactive-span.replaced {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--accent-emerald);
+}
+
+/* Signature Pad Modal Styling */
+.sig-canvas-wrap {
+  border: 2px dashed var(--border-hover);
+  border-radius: var(--radius-sm);
+  background: #FFFFFF;
+  margin: 16px 0;
+  position: relative;
+  overflow: hidden;
+}
+
+#signature-canvas {
+  width: 100%;
+  height: 180px;
+  display: block;
+  cursor: crosshair;
+}
+
+/* Text Replacement Modal */
+.span-preview-box {
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.88rem;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  word-break: break-all;
+}
+
+/* Touch Action & Responsive Adjustments (iPhone & Android) */
+#pdf-annotation-canvas, #signature-canvas {
+  touch-action: none; /* Prevents mobile scroll while drawing */
+}
+
+@media (max-width: 768px) {
+  .editor-navbar {
+    height: auto;
+    min-height: 54px;
+    padding: 8px 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .editor-filename {
+    max-width: 120px;
+    font-size: 0.82rem;
+  }
+
+  .editor-doc-meta {
+    gap: 6px;
+  }
+
+  .editor-zoom-controls {
+    gap: 4px;
+  }
+
+  #zoom-level {
+    display: none;
+  }
+
+  .editor-toolbar {
+    height: 48px;
+    padding: 0 10px;
+    gap: 4px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+
+  .editor-toolbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tool-btn {
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    min-height: 38px;
+  }
+
+  .editor-body {
+    height: calc(100vh - 102px);
+  }
+
+  .editor-sidebar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 220px;
+    z-index: 95;
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .editor-sidebar.collapsed {
+    transform: translateX(-100%);
+    width: 0;
+    padding: 0;
+  }
+
+  .editor-viewport {
+    padding: 16px 8px;
+  }
+}
+
+/* ===================================================================
+   Word-Like Formatting Toggles & Scanned Document Alert
+   =================================================================== */
+.btn-format-toggle {
+  min-width: 30px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  transition: all var(--transition-fast);
+}
+
+.btn-format-toggle:hover {
+  background: var(--bg-surface-hover);
+  color: var(--text-main);
+  border-color: var(--border-hover);
+}
+
+.btn-format-toggle.active {
+  background: var(--primary);
+  color: #FFFFFF;
+  border-color: var(--primary);
+  box-shadow: 0 0 8px var(--primary-glow);
+}
+
+/* Scanned Document Alert Banner */
+.scanned-alert-banner {
+  background: linear-gradient(90deg, rgba(245, 158, 11, 0.15) 0%, rgba(239, 68, 68, 0.12) 100%);
+  border-bottom: 1px solid rgba(245, 158, 11, 0.3);
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  z-index: 85;
+}
+
+/* Movable & Resizable Text Box Layer */
+#active-textbox-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+}
+
+.movable-textbox {
+  position: absolute;
+  pointer-events: auto;
+  border: 1.5px dashed var(--primary);
+  background: rgba(99, 102, 241, 0.05);
+  box-sizing: border-box;
+  padding: 4px;
+  cursor: move;
+  border-radius: 3px;
+  user-select: text;
+}
+
+.movable-textbox.active {
+  border-style: solid;
+  border-color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.4);
+}
+
+.textbox-inner-content {
+  width: 100%;
+  height: 100%;
+  outline: none;
+  background: transparent;
+  word-break: break-word;
+  overflow: hidden;
+}
+
+.textbox-resize-handle {
+  position: absolute;
+  right: -5px;
+  bottom: -5px;
+  width: 10px;
+  height: 10px;
+  background: var(--accent-cyan);
+  border: 1px solid #FFFFFF;
+  border-radius: 2px;
+  cursor: se-resize;
+}
+
+/* Word-Like Reflow Editing Modal Styles */
+.reflow-p-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color var(--transition-fast);
+}
+
+.reflow-p-card:focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 8px var(--primary-glow);
+}
+
+.reflow-p-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+}
+
+.reflow-p-textarea {
+  width: 100%;
+  background: transparent;
+  border: none;
+  color: var(--text-main);
+  font-family: inherit;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  resize: vertical;
+  outline: none;
+}
+
+/* ===================================================================
+   Responsive Mobile & Tablet Adjustments for PDF Editor
+   =================================================================== */
+@media (max-width: 768px) {
+  .editor-sidebar {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 120;
+    width: 220px;
+    background: var(--bg-secondary);
+    box-shadow: var(--shadow-lg);
+  }
+  
+  .editor-navbar {
+    padding: 0 10px;
+    height: 54px;
+    gap: 8px;
+  }
+  
+  .editor-filename {
+    max-width: 110px;
+    font-size: 0.85rem;
+  }
+  
+  .editor-zoom-controls {
+    display: none; /* Auto-fit on small screens */
+  }
+  
+  .editor-toolbar {
+    height: 48px;
+    padding: 0 8px;
+    gap: 4px;
+  }
+  
+  .tool-btn {
+    padding: 5px 9px;
+    font-size: 0.8rem;
+  }
+}
+
+

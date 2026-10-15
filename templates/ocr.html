@@ -1,0 +1,160 @@
+{% extends "base.html" %}
+
+{% block title %}OCR Studio — DocuFlex{% endblock %}
+
+{% block content %}
+<div class="main-content">
+  <div style="text-align:center;margin-bottom:36px;">
+    <h1 style="font-size:2.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:10px;">
+      Offline <span class="gradient-text">OCR Studio</span>
+    </h1>
+    <p style="color:var(--text-muted);max-width:640px;margin:0 auto;">
+      Optical Character Recognition powered by local Tesseract OCR. Extract editable text from scanned pages or generate searchable PDFs with full privacy.
+    </p>
+
+    <!-- OCR System Status Badge -->
+    <div style="margin-top:16px;">
+      <span class="sys-pill" style="display:inline-flex;">
+        <span class="pulse-dot"></span>
+        {{ capabilities.tesseract.engine }} Active
+      </span>
+      {% if not capabilities.tesseract.system_binary %}
+        <div style="margin-top:8px;font-size:0.82rem;color:var(--text-muted);">
+          🚀 <em>Built-in neural OCR active out-of-the-box! (Optional: System Tesseract OCR also supported).</em>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Dedicated Dropzone -->
+  <div id="main-dropzone" class="upload-card">
+    <input type="file" id="file-input" style="display:none;" accept=".pdf,.png,.jpg,.jpeg">
+    <div class="upload-icon-wrap">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
+        <circle cx="12" cy="12" r="3"></circle>
+      </svg>
+    </div>
+    <h3 class="upload-title">Drop scanned PDF or image here</h3>
+    <p class="upload-hint">Supports scanned PDF documents, PNG, and JPG images</p>
+    <button class="btn-upload" onclick="document.getElementById('file-input').click()">
+      Select Document
+    </button>
+  </div>
+
+  <!-- File Preview Card -->
+  <div id="file-preview-card" class="file-preview-card">
+    <div class="file-preview-header">
+      <div class="file-meta-group">
+        <div class="file-icon-box">🔍</div>
+        <div class="file-details">
+          <h4 id="preview-file-title">scanned_document.pdf</h4>
+          <p id="preview-file-meta">Ready for OCR analysis</p>
+        </div>
+      </div>
+      <button onclick="clearCurrentFile()" class="btn btn-secondary btn-sm">Clear</button>
+    </div>
+
+    <!-- OCR Options Section -->
+    <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border-subtle);display:grid;grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));gap:16px;">
+      <div class="form-group">
+        <label class="form-label">OCR Mode:</label>
+        <select id="ocr-mode-select" class="form-select">
+          <option value="extract_text">Extract Plain Text (.txt)</option>
+          <option value="searchable_pdf">Create Searchable PDF (.pdf)</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Recognition Language:</label>
+        <select id="ocr-lang-select" class="form-select">
+          {% for lang in capabilities.tesseract.languages %}
+            <option value="{{ lang }}" {% if lang == 'eng' %}selected{% endif %}>{{ lang }}</option>
+          {% else %}
+            <option value="eng">English (eng)</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;margin-top:12px;">
+      <button onclick="startOcrJob()" class="btn btn-primary" style="padding:12px 28px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        Run OCR Processing
+      </button>
+    </div>
+  </div>
+
+  <!-- Extracted Text Display Area (shown when Extract Plain Text completes) -->
+  <div id="ocr-result-card" style="display:none;background:var(--bg-surface);border:1px solid var(--border-hover);border-radius:var(--radius-md);padding:24px;margin-top:32px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:12px;">
+      <h3 style="font-size:1.2rem;font-weight:700;">Extracted Text Output</h3>
+      <div style="display:flex;gap:10px;">
+        <button id="btn-copy-ocr" class="btn btn-secondary btn-sm">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copy to Clipboard
+        </button>
+        <a id="btn-download-ocr-txt" href="#" class="btn btn-primary btn-sm">
+          Download .TXT
+        </a>
+      </div>
+    </div>
+    <textarea id="ocr-text-output" class="form-input" style="height:320px;font-family:'JetBrains Mono',monospace;font-size:0.9rem;line-height:1.6;" readonly></textarea>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+  async function startOcrJob() {
+    if (!currentJobId) {
+      showToast("Please upload a scanned document or image first.", "warning");
+      return;
+    }
+
+    const mode = document.getElementById("ocr-mode-select").value;
+    const lang = document.getElementById("ocr-lang-select").value;
+
+    openJobProgressModal(mode === "searchable_pdf" ? "Generating Searchable PDF..." : "Extracting Text via OCR...");
+
+    try {
+      const res = await fetch("/api/pdf/ocr", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          job_id: currentJobId,
+          mode: mode,
+          language: lang
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "OCR failed.");
+
+      if (mode === "extract_text") {
+        closeModal("job-progress-modal");
+        const card = document.getElementById("ocr-result-card");
+        const textarea = document.getElementById("ocr-text-output");
+        const dlBtn = document.getElementById("btn-download-ocr-txt");
+
+        textarea.value = data.extracted_text;
+        dlBtn.href = data.download_url;
+        card.style.display = "block";
+        card.scrollIntoView({ behavior: "smooth" });
+        showToast("Text extracted successfully!", "success", 4000);
+      } else {
+        // Searchable PDF async polling
+        pollJobStatus(currentJobId);
+      }
+    } catch (err) {
+      updateJobError(err.message);
+    }
+  }
+
+  document.getElementById("btn-copy-ocr")?.addEventListener("click", () => {
+    const text = document.getElementById("ocr-text-output").value;
+    navigator.clipboard.writeText(text).then(() => {
+      showToast("Extracted text copied to clipboard!", "success", 2500);
+    });
+  });
+</script>
+{% endblock %}

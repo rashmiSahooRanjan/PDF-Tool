@@ -1,0 +1,1162 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="main-content">
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-tag">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      <span>Privacy-First • 100% Local Processing • No Cloud APIs</span>
+    </div>
+    <h1 class="hero-title">
+      Every PDF Tool You Need.<br>
+      <span class="gradient-text">Zero Cloud Uploads.</span>
+    </h1>
+    <p class="hero-subtitle">
+      Complete 33-tool professional PDF & document suite. Edit text, convert Office & images, repair, organize, redact, sign, and run offline AI intelligence with fast local Python libraries.
+    </p>
+
+    <!-- Drag & Drop Upload Zone -->
+    <div id="main-dropzone" class="upload-card">
+      <input type="file" id="file-input" style="display:none;" multiple accept=".pdf,.docx,.xlsx,.pptx,.png,.jpg,.jpeg,.html,.htm,.md,.txt">
+      <div class="upload-icon-wrap">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+      </div>
+      <h3 class="upload-title">Drop your document here, or browse</h3>
+      <p class="upload-hint">Upload PDF, DOCX, XLSX, PPTX, HTML, PNG, or JPG files (Up to 64 MB)</p>
+      <button class="btn-upload" onclick="document.getElementById('file-input').click()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        Select Document
+      </button>
+
+      <div class="supported-formats-pills">
+        <span class="format-pill">PDF</span>
+        <span class="format-pill">DOCX</span>
+        <span class="format-pill">XLSX</span>
+        <span class="format-pill">PPTX</span>
+        <span class="format-pill">HTML</span>
+        <span class="format-pill">JPG</span>
+        <span class="format-pill">PNG</span>
+      </div>
+    </div>
+
+    <!-- Active File Preview Card -->
+    <div id="file-preview-card" class="file-preview-card" style="display:none;">
+      <div class="file-preview-header">
+        <div class="file-meta-group">
+          <div class="file-icon-box">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+          </div>
+          <div class="file-details">
+            <h4 id="preview-file-title">document.pdf</h4>
+            <p id="preview-file-meta">Loading details...</p>
+          </div>
+        </div>
+        <div class="file-actions-row">
+          <button onclick="clearCurrentFile()" class="btn btn-secondary btn-sm" title="Remove file">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            Remove
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 7-COLUMN MEGA DASHBOARD (Exact Match to Picture) ================= -->
+  <section class="mega-suite-section">
+    <div class="mega-suite-header">
+      <div class="mega-suite-title">
+        <span>DocuFlex Complete PDF Suite</span>
+        <span class="tool-badge featured">All 33 Tools</span>
+      </div>
+      <div style="font-size:0.85rem;color:var(--text-muted);">
+        Click any tool below to launch immediately
+      </div>
+    </div>
+
+    <div class="mega-suite-grid">
+      <!-- 1. ORGANIZE PDF -->
+      <div class="mega-column">
+        <div class="mega-column-title">ORGANIZE PDF</div>
+        <div class="mega-tool-item" onclick="selectTool('merge-pdf')" title="Merge multiple PDF documents into one">
+          <span class="mega-tool-icon icon-org">🔀</span>
+          <span class="mega-tool-name">Merge PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('split-pdf')" title="Split PDF by page ranges">
+          <span class="mega-tool-icon icon-org">✂️</span>
+          <span class="mega-tool-name">Split PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('remove-pages')" title="Delete specific page numbers">
+          <span class="mega-tool-icon icon-org">❌</span>
+          <span class="mega-tool-name">Remove pages</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('extract-pages')" title="Extract individual pages to new PDF">
+          <span class="mega-tool-icon icon-org">📤</span>
+          <span class="mega-tool-name">Extract pages</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('organize-pdf')" title="Reorder, rotate, or arrange pages">
+          <span class="mega-tool-icon icon-org">📑</span>
+          <span class="mega-tool-name">Organize PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('scan-to-pdf')" title="Camera scanner to create PDF">
+          <span class="mega-tool-icon icon-org">📷</span>
+          <span class="mega-tool-name">Scan to PDF</span>
+        </div>
+      </div>
+
+      <!-- 2. OPTIMIZE PDF -->
+      <div class="mega-column">
+        <div class="mega-column-title">OPTIMIZE PDF</div>
+        <div class="mega-tool-item" onclick="selectTool('compress-pdf')" title="Reduce PDF file size">
+          <span class="mega-tool-icon icon-opt">🗜️</span>
+          <span class="mega-tool-name">Compress PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('repair-pdf')" title="Fix corrupted or damaged PDF streams">
+          <span class="mega-tool-icon icon-opt">🛠️</span>
+          <span class="mega-tool-name">Repair PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('ocr-pdf')" title="Extract scanned text & create searchable PDF">
+          <span class="mega-tool-icon icon-opt">👁️</span>
+          <span class="mega-tool-name">OCR PDF</span>
+        </div>
+      </div>
+
+      <!-- 3. CONVERT TO PDF -->
+      <div class="mega-column">
+        <div class="mega-column-title">CONVERT TO PDF</div>
+        <div class="mega-tool-item" onclick="selectTool('jpg-to-pdf')" title="Convert JPG / PNG images to PDF">
+          <span class="mega-tool-icon icon-conv-jpg">🖼️</span>
+          <span class="mega-tool-name">JPG to PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('word-to-pdf')" title="Convert Microsoft Word (.docx) to PDF">
+          <span class="mega-tool-icon icon-conv-word">📘</span>
+          <span class="mega-tool-name">WORD to PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('pptx-to-pdf')" title="Convert PowerPoint (.pptx) to PDF">
+          <span class="mega-tool-icon icon-conv-ppt">📊</span>
+          <span class="mega-tool-name">POWERPOINT to PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('excel-to-pdf')" title="Convert Excel spreadsheets (.xlsx) to PDF">
+          <span class="mega-tool-icon icon-conv-excel">📗</span>
+          <span class="mega-tool-name">EXCEL to PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('html-to-pdf')" title="Render HTML webpages to PDF">
+          <span class="mega-tool-icon icon-conv-html">🌐</span>
+          <span class="mega-tool-name">HTML to PDF</span>
+        </div>
+      </div>
+
+      <!-- 4. CONVERT FROM PDF -->
+      <div class="mega-column">
+        <div class="mega-column-title">CONVERT FROM PDF</div>
+        <div class="mega-tool-item" onclick="selectTool('pdf-to-jpg')" title="Export PDF pages to high-res JPG images">
+          <span class="mega-tool-icon icon-conv-jpg">🌄</span>
+          <span class="mega-tool-name">PDF to JPG</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('pdf-to-word')" title="Convert PDF to editable Microsoft Word (.docx)">
+          <span class="mega-tool-icon icon-conv-word">📄</span>
+          <span class="mega-tool-name">PDF to WORD</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('pdf-to-pptx')" title="Convert PDF to PowerPoint presentation slides">
+          <span class="mega-tool-icon icon-conv-ppt">📑</span>
+          <span class="mega-tool-name">PDF to POWERPOINT</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('pdf-to-excel')" title="Extract tabular data to Excel (.xlsx)">
+          <span class="mega-tool-icon icon-conv-excel">📊</span>
+          <span class="mega-tool-name">PDF to EXCEL</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('pdf-to-pdfa')" title="Convert PDF to archival PDF/A-1b standard">
+          <span class="mega-tool-icon icon-conv-pdfa">🏛️</span>
+          <span class="mega-tool-name">PDF to PDF/A</span>
+        </div>
+      </div>
+
+      <!-- 5. EDIT PDF -->
+      <div class="mega-column">
+        <div class="mega-column-title">EDIT PDF</div>
+        <div class="mega-tool-item" onclick="selectTool('rotate-pdf')" title="Rotate PDF pages 90°, 180°, or 270°">
+          <span class="mega-tool-icon icon-edit">🔄</span>
+          <span class="mega-tool-name">Rotate PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('page-numbers')" title="Add headers, footers & page numbering">
+          <span class="mega-tool-icon icon-edit">🔢</span>
+          <span class="mega-tool-name">Add page numbers</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('watermark-pdf')" title="Stamp custom text watermarks">
+          <span class="mega-tool-icon icon-edit">💧</span>
+          <span class="mega-tool-name">Add watermark</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('crop-pdf')" title="Crop page margins and trim borders">
+          <span class="mega-tool-icon icon-edit">✂️</span>
+          <span class="mega-tool-name">Crop PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('edit-pdf')" title="Full visual Word-like PDF editor">
+          <span class="mega-tool-icon icon-edit">✏️</span>
+          <span class="mega-tool-name">Edit PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('pdf-forms')" title="Inspect & fill interactive AcroForms">
+          <span class="mega-tool-icon icon-edit">📋</span>
+          <span class="mega-tool-name">PDF Forms</span>
+        </div>
+      </div>
+
+      <!-- 6. PDF SECURITY -->
+      <div class="mega-column">
+        <div class="mega-column-title">PDF SECURITY</div>
+        <div class="mega-tool-item" onclick="selectTool('unlock-pdf')" title="Decrypt password protected PDF">
+          <span class="mega-tool-icon icon-sec">🔓</span>
+          <span class="mega-tool-name">Unlock PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('protect-pdf')" title="Encrypt PDF with AES password">
+          <span class="mega-tool-icon icon-sec">🛡️</span>
+          <span class="mega-tool-name">Protect PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('sign-pdf')" title="Draw or place digital signature">
+          <span class="mega-tool-icon icon-sec">✍️</span>
+          <span class="mega-tool-name">Sign PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('redact-pdf')" title="Blackout sensitive terms, emails, SSNs, credit cards">
+          <span class="mega-tool-icon icon-sec">⬛</span>
+          <span class="mega-tool-name">Redact PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('compare-pdf')" title="Compare two PDFs for text & structural differences">
+          <span class="mega-tool-icon icon-sec">⚖️</span>
+          <span class="mega-tool-name">Compare PDF</span>
+        </div>
+      </div>
+
+      <!-- 7. PDF INTELLIGENCE -->
+      <div class="mega-column">
+        <div class="mega-column-title">PDF INTELLIGENCE</div>
+        <div class="mega-tool-item" onclick="selectTool('ai-summarizer')" title="100% offline NLP key takeaway & executive summarizer">
+          <span class="mega-tool-icon icon-intel">🤖</span>
+          <span class="mega-tool-name">AI Summarizer</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('translate-pdf')" title="Offline document translation">
+          <span class="mega-tool-icon icon-intel">🌐</span>
+          <span class="mega-tool-name">Translate PDF</span>
+        </div>
+        <div class="mega-tool-item" onclick="selectTool('pdf-to-markdown')" title="Convert PDF to structured GitHub Markdown & tables">
+          <span class="mega-tool-icon icon-intel">📝</span>
+          <span class="mega-tool-name">PDF to Markdown</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Category Filtered Cards Section -->
+  <section>
+    <div class="section-header">
+      <h2 class="section-title">Interactive Document Utilities</h2>
+      <div class="category-tabs">
+        <button class="tab-btn active" data-category="all">All Tools</button>
+        <button class="tab-btn" data-category="organize">Organize</button>
+        <button class="tab-btn" data-category="optimize">Optimize</button>
+        <button class="tab-btn" data-category="convert">Convert</button>
+        <button class="tab-btn" data-category="edit">Edit</button>
+        <button class="tab-btn" data-category="security">Security</button>
+        <button class="tab-btn" data-category="intelligence">Intelligence</button>
+      </div>
+    </div>
+
+    <div class="tools-grid">
+      <!-- 1. Edit PDF -->
+      <div class="tool-card" data-category="edit" onclick="selectTool('edit-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-purple">✏️</div>
+            <span class="tool-badge featured">Interactive</span>
+          </div>
+          <h3 class="tool-title">Edit PDF</h3>
+          <p class="tool-desc">Inspect and replace existing text, add annotations, draw, insert shapes, signatures, and manage pages.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Open Editor</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 2. AI Summarizer -->
+      <div class="tool-card" data-category="intelligence" onclick="selectTool('ai-summarizer')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-blue">🤖</div>
+            <span class="tool-badge featured">100% Offline AI</span>
+          </div>
+          <h3 class="tool-title">AI Summarizer</h3>
+          <p class="tool-desc">Extract executive summaries, key takeaways, word stats, and bullet points without cloud API calls.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Summarize PDF</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 3. PDF to Markdown -->
+      <div class="tool-card" data-category="intelligence" onclick="selectTool('pdf-to-markdown')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-cyan">📝</div>
+            <span class="tool-badge">Markdown</span>
+          </div>
+          <h3 class="tool-title">PDF to Markdown</h3>
+          <p class="tool-desc">Convert PDF content into structured GitHub Markdown, preserving headers, bullet lists, bold text, and markdown tables.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Convert to .MD</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 4. Translate PDF -->
+      <div class="tool-card" data-category="intelligence" onclick="selectTool('translate-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-purple">🌐</div>
+            <span class="tool-badge">Multilingual</span>
+          </div>
+          <h3 class="tool-title">Translate PDF</h3>
+          <p class="tool-desc">Translate document content into Spanish, French, German, Hindi, Chinese, and more with offline dictionaries.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Translate</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 5. Redact PDF -->
+      <div class="tool-card" data-category="security" onclick="selectTool('redact-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-rose">⬛</div>
+            <span class="tool-badge">Privacy Shield</span>
+          </div>
+          <h3 class="tool-title">Redact PDF</h3>
+          <p class="tool-desc">Permanently blackout sensitive keywords, emails, phone numbers, SSNs, and credit cards with true vector redactions.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Redact Keywords</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 6. Compare PDF -->
+      <div class="tool-card" data-category="security" onclick="selectTool('compare-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-amber">⚖️</div>
+            <span class="tool-badge">Audit</span>
+          </div>
+          <h3 class="tool-title">Compare PDF</h3>
+          <p class="tool-desc">Compare two PDF documents to instantly find text changes, additions, deletions, and structural variance.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Compare Files</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 7. Sign PDF -->
+      <div class="tool-card" data-category="security" onclick="selectTool('sign-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-blue">✍️</div>
+            <span class="tool-badge">Signature</span>
+          </div>
+          <h3 class="tool-title">Sign PDF</h3>
+          <p class="tool-desc">Draw your signature with smooth stylus/touch smoothing, or type stylized handwriting, and stamp directly onto document pages.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Sign Document</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 8. Scan to PDF -->
+      <div class="tool-card" data-category="organize" onclick="selectTool('scan-to-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-rose">📷</div>
+            <span class="tool-badge">Camera / Mobile</span>
+          </div>
+          <h3 class="tool-title">Scan to PDF</h3>
+          <p class="tool-desc">Use your Android, iPhone, or webcam to capture physical pages in high resolution and compile them into a consolidated PDF.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Launch Scanner</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 9. PDF Forms -->
+      <div class="tool-card" data-category="edit" onclick="selectTool('pdf-forms')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-emerald">📋</div>
+            <span class="tool-badge">AcroForms</span>
+          </div>
+          <h3 class="tool-title">PDF Forms</h3>
+          <p class="tool-desc">Inspect interactive form fields, auto-populate data, fill checkboxes and textboxes, and generate finalized PDFs.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Fill Forms</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 10. Crop PDF -->
+      <div class="tool-card" data-category="edit" onclick="selectTool('crop-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-cyan">✂️</div>
+            <span class="tool-badge">Margins</span>
+          </div>
+          <h3 class="tool-title">Crop PDF</h3>
+          <p class="tool-desc">Trim excessive page margins or headers and footers with customizable top, bottom, left, and right insets.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Crop Margins</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 11. Repair PDF -->
+      <div class="tool-card" data-category="optimize" onclick="selectTool('repair-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-emerald">🛠️</div>
+            <span class="tool-badge">Fix & Clean</span>
+          </div>
+          <h3 class="tool-title">Repair PDF</h3>
+          <p class="tool-desc">Rebuild corrupted cross-reference tables, fix broken streams, eliminate dangling objects, and restore readable PDF files.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Repair File</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 12. Remove Pages -->
+      <div class="tool-card" data-category="organize" onclick="selectTool('remove-pages')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-rose">❌</div>
+            <span class="tool-badge">Pages</span>
+          </div>
+          <h3 class="tool-title">Remove Pages</h3>
+          <p class="tool-desc">Quickly remove unwanted individual page numbers or ranges (e.g. 2, 4-6) and generate a cleaned document.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Remove Pages</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 13. PDF to Word -->
+      <div class="tool-card" data-category="convert" onclick="selectTool('pdf-to-word')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-blue">📘</div>
+            <span class="tool-badge">DOCX</span>
+          </div>
+          <h3 class="tool-title">PDF to Word</h3>
+          <p class="tool-desc">Extract text, tables, and styles into editable Microsoft Word (.docx) documents with pdf2docx.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Convert Now</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 14. PDF to PowerPoint -->
+      <div class="tool-card" data-category="convert" onclick="selectTool('pdf-to-pptx')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-amber">📊</div>
+            <span class="tool-badge">PPTX</span>
+          </div>
+          <h3 class="tool-title">PDF to PowerPoint</h3>
+          <p class="tool-desc">Turn PDF pages into PowerPoint presentation slides with visual or editable block layout reconstruction.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Convert Slides</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 15. PDF to Excel -->
+      <div class="tool-card" data-category="convert" onclick="selectTool('pdf-to-excel')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-emerald">📗</div>
+            <span class="tool-badge">XLSX</span>
+          </div>
+          <h3 class="tool-title">PDF to Excel</h3>
+          <p class="tool-desc">Extract structured tabular data directly from PDF pages into spreadsheets with custom cell grids.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Extract Tables</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 16. PDF to Images -->
+      <div class="tool-card" data-category="convert" onclick="selectTool('pdf-to-jpg')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-rose">🖼️</div>
+            <span class="tool-badge">JPG / PNG</span>
+          </div>
+          <h3 class="tool-title">PDF to Images</h3>
+          <p class="tool-desc">Render PDF pages to ultra sharp PNG or JPG images, automatically zipped for multi-page documents.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Export Images</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 17. Word / Excel / PPT to PDF -->
+      <div class="tool-card" data-category="convert" onclick="selectTool('word-to-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-blue">📄</div>
+            <span class="tool-badge">Office to PDF</span>
+          </div>
+          <h3 class="tool-title">Office to PDF</h3>
+          <p class="tool-desc">Convert Word (DOCX), Excel (XLSX), and PowerPoint (PPTX) to standard PDF using native MS Office automation.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Convert to PDF</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 18. HTML to PDF -->
+      <div class="tool-card" data-category="convert" onclick="selectTool('html-to-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-cyan">🌐</div>
+            <span class="tool-badge">HTML</span>
+          </div>
+          <h3 class="tool-title">HTML to PDF</h3>
+          <p class="tool-desc">Convert HTML documents and web snippets into clean PDF pages using local PyMuPDF rendering.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>HTML to PDF</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 19. PDF to PDF/A -->
+      <div class="tool-card" data-category="convert" onclick="selectTool('pdf-to-pdfa')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-cyan">🏛️</div>
+            <span class="tool-badge">Archival</span>
+          </div>
+          <h3 class="tool-title">PDF to PDF/A</h3>
+          <p class="tool-desc">Convert documents to ISO-standard PDF/A for long-term document preservation and legal compliance.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Convert to PDF/A</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 20. Merge PDF -->
+      <div class="tool-card" data-category="organize" onclick="selectTool('merge-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-purple">🔀</div>
+            <span class="tool-badge">Combine</span>
+          </div>
+          <h3 class="tool-title">Merge PDFs</h3>
+          <p class="tool-desc">Combine multiple PDF files into one clean document in your chosen order with zero quality loss.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Merge Files</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 21. Split PDF -->
+      <div class="tool-card" data-category="organize" onclick="selectTool('split-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-rose">✂️</div>
+            <span class="tool-badge">Pages</span>
+          </div>
+          <h3 class="tool-title">Split PDF</h3>
+          <p class="tool-desc">Extract specific page numbers or ranges (e.g. 1-5, 8, 12-15) into a new lightweight PDF.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Split PDF</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 22. Compress PDF -->
+      <div class="tool-card" data-category="optimize" onclick="selectTool('compress-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-amber">🗜️</div>
+            <span class="tool-badge">Optimize</span>
+          </div>
+          <h3 class="tool-title">Compress PDF</h3>
+          <p class="tool-desc">Reduce file size using stream deflation, garbage collection, and image downsampling.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Reduce Size</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- 23. OCR Studio -->
+      <div class="tool-card" data-category="optimize" onclick="selectTool('ocr-pdf')">
+        <div>
+          <div class="tool-card-top">
+            <div class="tool-icon icon-cyan">👁️</div>
+            <span class="tool-badge ocr-badge">Offline OCR</span>
+          </div>
+          <h3 class="tool-title">OCR & Searchable PDF</h3>
+          <p class="tool-desc">Extract text from scanned PDF pages and images, or generate searchable PDFs with an invisible OCR layer.</p>
+        </div>
+        <div class="tool-arrow">
+          <span>Run OCR</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Jobs Shelf -->
+  <section class="recent-jobs-section">
+    <div class="section-header">
+      <h3 style="font-size:1.25rem;font-weight:700;">Recent Local Jobs</h3>
+      <button onclick="localStorage.removeItem('docuflex_recent_jobs'); renderRecentJobs();" class="btn btn-secondary btn-sm">Clear History</button>
+    </div>
+    <div id="recent-jobs-list" class="recent-jobs-list">
+      <!-- Populated dynamically via JS -->
+    </div>
+  </section>
+</div>
+
+<!-- ================= MODALS ================= -->
+
+<!-- 1. PPTX Mode Modal -->
+<div id="pptx-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">PDF to PowerPoint Options</h3>
+      <button onclick="closeModal('pptx-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Conversion Strategy:</label>
+      <select id="pptx-mode-select" class="form-select">
+        <option value="visual">Visual Mode (Sharp full-slide fidelity, preserves exact layout)</option>
+        <option value="editable">Editable Mode (Reconstructs text boxes & layout elements)</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('pptx-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="startConversion('pptx', { mode: document.getElementById('pptx-mode-select').value })" class="btn btn-primary">Start Conversion</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2. Split Modal -->
+<div id="split-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Split PDF Pages</h3>
+      <button onclick="closeModal('split-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Page Ranges to Extract:</label>
+      <input type="text" id="split-range-input" class="form-input" placeholder="e.g. 1-3, 5, 8-10" value="1">
+      <small style="color:var(--text-dim);font-size:0.8rem;display:block;margin-top:4px;">Comma-separated page numbers or intervals.</small>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('split-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitSplit()" class="btn btn-primary">Extract Pages</button>
+    </div>
+  </div>
+</div>
+
+<!-- 3. Remove Pages Modal -->
+<div id="remove-pages-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Remove Pages from PDF</h3>
+      <button onclick="closeModal('remove-pages-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Pages to Delete:</label>
+      <input type="text" id="remove-pages-input" class="form-input" placeholder="e.g. 2, 4-6" value="1">
+      <small style="color:var(--text-dim);font-size:0.8rem;display:block;margin-top:4px;">Enter page numbers or ranges to remove permanently.</small>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('remove-pages-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitRemovePages()" class="btn btn-primary">Remove Pages</button>
+    </div>
+  </div>
+</div>
+
+<!-- 4. Rotate Modal -->
+<div id="rotate-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Rotate PDF</h3>
+      <button onclick="closeModal('rotate-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Rotation Angle:</label>
+      <select id="rotate-angle-select" class="form-select">
+        <option value="90">90° Clockwise</option>
+        <option value="180">180° Flip</option>
+        <option value="270">270° Counter-clockwise</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('rotate-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitRotate()" class="btn btn-primary">Rotate</button>
+    </div>
+  </div>
+</div>
+
+<!-- 5. Compress Modal -->
+<div id="compress-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Compress PDF Document</h3>
+      <button onclick="closeModal('compress-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Compression Level:</label>
+      <select id="compress-level-select" class="form-select">
+        <option value="medium">Balanced (Recommended: ~100 DPI images + clean streams)</option>
+        <option value="low">Low (Light size reduction, highest visual quality)</option>
+        <option value="high">High (Maximum size reduction, 72 DPI images)</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('compress-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitCompress()" class="btn btn-primary">Compress</button>
+    </div>
+  </div>
+</div>
+
+<!-- 6. Watermark Modal -->
+<div id="watermark-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Add Watermark</h3>
+      <button onclick="closeModal('watermark-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Watermark Text:</label>
+      <input type="text" id="watermark-text-input" class="form-input" value="CONFIDENTIAL">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Opacity (0.1 to 0.9):</label>
+      <input type="range" id="watermark-opacity-input" min="0.1" max="0.9" step="0.05" value="0.25" style="width:100%;">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Text Color:</label>
+      <input type="color" id="watermark-color-input" value="#94A3B8" class="form-input" style="height:44px;padding:4px;">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('watermark-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitWatermark()" class="btn btn-primary">Apply Watermark</button>
+    </div>
+  </div>
+</div>
+
+<!-- 7. Page Numbers Modal -->
+<div id="pagenum-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Add Page Numbers</h3>
+      <button onclick="closeModal('pagenum-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Numbering Format:</label>
+      <select id="pagenum-format-select" class="form-select">
+        <option value="Page {page} of {total}">Page {page} of {total}</option>
+        <option value="{page} / {total}">{page} / {total}</option>
+        <option value="- {page} -">- {page} -</option>
+        <option value="{page}">{page}</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Position on Page:</label>
+      <select id="pagenum-position-select" class="form-select">
+        <option value="bottom-center">Bottom Center</option>
+        <option value="bottom-right">Bottom Right</option>
+        <option value="bottom-left">Bottom Left</option>
+        <option value="top-right">Top Right</option>
+      </select>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('pagenum-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitPageNumbers()" class="btn btn-primary">Add Page Numbers</button>
+    </div>
+  </div>
+</div>
+
+<!-- 8. Crop Modal -->
+<div id="crop-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Crop PDF Page Margins</h3>
+      <button onclick="closeModal('crop-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:14px;">Enter margin trim amounts in points (72 pt = 1 inch):</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+      <div class="form-group">
+        <label class="form-label">Top Trim (pt):</label>
+        <input type="number" id="crop-top-input" class="form-input" value="36" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Bottom Trim (pt):</label>
+        <input type="number" id="crop-bottom-input" class="form-input" value="36" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Left Trim (pt):</label>
+        <input type="number" id="crop-left-input" class="form-input" value="36" min="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Right Trim (pt):</label>
+        <input type="number" id="crop-right-input" class="form-input" value="36" min="0">
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('crop-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitCrop()" class="btn btn-primary">Crop Margins</button>
+    </div>
+  </div>
+</div>
+
+<!-- 9. Protect Modal -->
+<div id="protect-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Password Protect PDF</h3>
+      <button onclick="closeModal('protect-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Choose Document Password:</label>
+      <input type="password" id="protect-password-input" class="form-input" placeholder="Enter secure password">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('protect-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitProtect()" class="btn btn-primary">Encrypt PDF</button>
+    </div>
+  </div>
+</div>
+
+<!-- 10. Unlock Modal -->
+<div id="unlock-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Unlock Protected PDF</h3>
+      <button onclick="closeModal('unlock-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Document Password:</label>
+      <input type="password" id="unlock-password-input" class="form-input" placeholder="Enter password to unlock">
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('unlock-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitUnlock()" class="btn btn-primary">Unlock & Remove Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- 11. Repair Modal -->
+<div id="repair-options-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h3 class="modal-title">Repair Damaged PDF</h3>
+      <button onclick="closeModal('repair-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div style="text-align:center;padding:12px 0;">
+      <div style="font-size:2.5rem;margin-bottom:8px;">🛠️</div>
+      <h4 style="margin-bottom:8px;">Deep Stream & XREF Reconstruction</h4>
+      <p style="font-size:0.86rem;color:var(--text-muted);line-height:1.5;">
+        DocuFlex will rebuild corrupted cross-reference tables, fix stream byte lengths, remove dangling objects, and recover unreadable content.
+      </p>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('repair-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitRepair()" class="btn btn-primary">Start Repair</button>
+    </div>
+  </div>
+</div>
+
+<!-- 12. Sign PDF Modal -->
+<div id="sign-options-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">Sign Document</h3>
+      <button onclick="closeModal('sign-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:10px;">Draw your signature below with mouse or touch:</p>
+    
+    <div class="signature-pad-box">
+      <canvas id="sign-canvas" class="signature-canvas" width="650" height="180"></canvas>
+    </div>
+    
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+      <button onclick="clearSignaturePad()" class="btn btn-secondary btn-sm">Clear Signature</button>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <label style="font-size:0.85rem;color:var(--text-dim);">Pen Color:</label>
+        <input type="color" id="sign-color" value="#000000" style="width:36px;height:28px;border:none;cursor:pointer;">
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('sign-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitSignature()" class="btn btn-primary">Apply Signature to Document</button>
+    </div>
+  </div>
+</div>
+
+<!-- 13. Redact Keywords Modal -->
+<div id="redact-options-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">Redact Sensitive PDF Content</h3>
+      <button onclick="closeModal('redact-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Auto-Detect Sensitive Patterns:</label>
+      <div class="presets-flex">
+        <label class="preset-chip">
+          <input type="checkbox" id="preset-email" checked>
+          <span>Email Addresses</span>
+        </label>
+        <label class="preset-chip">
+          <input type="checkbox" id="preset-phone" checked>
+          <span>Phone Numbers</span>
+        </label>
+        <label class="preset-chip">
+          <input type="checkbox" id="preset-ssn" checked>
+          <span>Social Security (SSN)</span>
+        </label>
+        <label class="preset-chip">
+          <input type="checkbox" id="preset-card">
+          <span>Credit Card Numbers</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="form-group" style="margin-top:14px;">
+      <label class="form-label">Custom Keywords or Phrases to Blackout:</label>
+      <input type="text" id="redact-keywords-input" class="form-input" placeholder="e.g. Confidential, John Doe, Secret Project">
+      <small style="color:var(--text-dim);font-size:0.8rem;display:block;margin-top:4px;">Comma-separated words or phrases.</small>
+    </div>
+
+    <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:20px;">
+      <button onclick="closeModal('redact-options-modal')" class="btn btn-secondary">Cancel</button>
+      <button onclick="submitRedact()" class="btn btn-primary">Apply Permanent Redactions</button>
+    </div>
+  </div>
+</div>
+
+<!-- 14. Compare PDFs Modal -->
+<div id="compare-options-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">Compare Two PDF Documents</h3>
+      <button onclick="closeModal('compare-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    
+    <div id="compare-upload-section">
+      <p style="font-size:0.86rem;color:var(--text-muted);margin-bottom:12px;">Select the second PDF document to compare with your current file:</p>
+      <div class="form-group">
+        <input type="file" id="compare-file2-input" class="form-input" accept=".pdf">
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button onclick="closeModal('compare-options-modal')" class="btn btn-secondary">Cancel</button>
+        <button onclick="submitCompare()" class="btn btn-primary">Run Comparison</button>
+      </div>
+    </div>
+
+    <div id="compare-results-section" style="display:none;margin-top:14px;">
+      <div id="compare-summary-meta" style="font-size:0.88rem;margin-bottom:10px;font-weight:600;"></div>
+      <div id="compare-diff-box" class="diff-output-box"></div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button onclick="document.getElementById('compare-results-section').style.display='none';document.getElementById('compare-upload-section').style.display='block';" class="btn btn-secondary">Compare Another</button>
+        <button onclick="closeModal('compare-options-modal')" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 15. PDF Forms Modal -->
+<div id="forms-options-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">Interactive PDF Forms</h3>
+      <button onclick="closeModal('forms-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    <div id="forms-loading-state" style="text-align:center;padding:20px;">
+      <span class="pulse-dot"></span> Inspecting form fields in document...
+    </div>
+    <div id="forms-content-state" style="display:none;">
+      <div id="forms-fields-container" style="max-height:300px;overflow-y:auto;margin-bottom:14px;"></div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;">
+        <button onclick="closeModal('forms-options-modal')" class="btn btn-secondary">Cancel</button>
+        <button onclick="submitFillForms()" class="btn btn-primary">Save & Fill Form</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 16. AI Summarizer Modal -->
+<div id="summarize-options-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">AI Document Summarizer</h3>
+      <button onclick="closeModal('summarize-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    
+    <div id="summarize-controls">
+      <div class="form-group">
+        <label class="form-label">Summary Depth:</label>
+        <select id="summarize-sentences-select" class="form-select">
+          <option value="3">Concise (3 key bullet points)</option>
+          <option value="5" selected>Standard (5 key bullet points)</option>
+          <option value="8">Detailed (8 key bullet points)</option>
+          <option value="12">Comprehensive (12 key bullet points)</option>
+        </select>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button onclick="closeModal('summarize-options-modal')" class="btn btn-secondary">Cancel</button>
+        <button onclick="submitSummarize()" class="btn btn-primary">Generate Summary</button>
+      </div>
+    </div>
+
+    <div id="summarize-results" style="display:none;margin-top:14px;">
+      <div id="summarize-stats" style="display:flex;gap:12px;margin-bottom:12px;font-size:0.85rem;color:var(--text-muted);"></div>
+      <div id="summarize-text-content" class="markdown-preview-box"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+        <button onclick="copySummaryToClipboard()" class="btn btn-secondary btn-sm">📋 Copy to Clipboard</button>
+        <button onclick="closeModal('summarize-options-modal')" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 17. Translate Modal -->
+<div id="translate-options-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">Translate PDF Document</h3>
+      <button onclick="closeModal('translate-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    
+    <div id="translate-controls">
+      <div class="form-group">
+        <label class="form-label">Target Language:</label>
+        <select id="translate-lang-select" class="form-select">
+          <option value="es">Spanish (Español)</option>
+          <option value="fr">French (Français)</option>
+          <option value="de">German (Deutsch)</option>
+          <option value="hi">Hindi (हिन्दी)</option>
+          <option value="zh">Chinese (中文)</option>
+          <option value="ja">Japanese (日本語)</option>
+          <option value="pt">Portuguese (Português)</option>
+          <option value="it">Italian (Italiano)</option>
+          <option value="ru">Russian (Русский)</option>
+          <option value="ar">Arabic (العربية)</option>
+        </select>
+      </div>
+      <div style="display:flex;justify-content:flex-end;gap:10px;margin-top:16px;">
+        <button onclick="closeModal('translate-options-modal')" class="btn btn-secondary">Cancel</button>
+        <button onclick="submitTranslate()" class="btn btn-primary">Translate Document</button>
+      </div>
+    </div>
+
+    <div id="translate-results" style="display:none;margin-top:14px;">
+      <div id="translate-meta" style="font-size:0.85rem;color:var(--text-muted);margin-bottom:8px;"></div>
+      <div id="translate-preview-box" class="markdown-preview-box"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+        <button onclick="copyTranslationToClipboard()" class="btn btn-secondary btn-sm">📋 Copy Translation</button>
+        <button onclick="closeModal('translate-options-modal')" class="btn btn-primary">Done</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 18. PDF to Markdown Modal -->
+<div id="markdown-options-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">PDF to GitHub Markdown</h3>
+      <button onclick="closeModal('markdown-options-modal')" class="modal-close-btn">&times;</button>
+    </div>
+    
+    <div id="markdown-preview-area" class="markdown-preview-box" style="margin-bottom:14px;">
+      Extracting structured markdown with headers and tables...
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;">
+      <button onclick="copyMarkdownToClipboard()" class="btn btn-secondary btn-sm">📋 Copy Markdown</button>
+      <div style="display:flex;gap:10px;">
+        <button onclick="closeModal('markdown-options-modal')" class="btn btn-secondary">Close</button>
+        <button id="markdown-download-btn" class="btn btn-primary">Download .MD File</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 19. Scan to PDF Camera Modal -->
+<div id="scan-pdf-modal" class="modal-overlay">
+  <div class="modal-card modal-lg">
+    <div class="modal-header">
+      <h3 class="modal-title">Scan to PDF (Device Camera)</h3>
+      <button onclick="stopCamera(); closeModal('scan-pdf-modal')" class="modal-close-btn">&times;</button>
+    </div>
+
+    <div class="camera-preview-box">
+      <video id="camera-video" class="camera-video" autoplay playsinline></video>
+      <canvas id="camera-capture-canvas" style="display:none;"></canvas>
+    </div>
+
+    <div style="display:flex;justify-content:center;gap:12px;margin:14px 0;">
+      <button onclick="captureCameraPage()" class="btn btn-primary" id="btn-snap-photo">
+        📸 Snap Page (<span id="scan-page-count">0</span> captured)
+      </button>
+      <button onclick="document.getElementById('scan-file-fallback').click()" class="btn btn-secondary">
+        📁 Import Photo
+      </button>
+      <input type="file" id="scan-file-fallback" accept="image/*" multiple style="display:none;">
+    </div>
+
+    <div id="scanned-reel" class="scanned-reel">
+      <!-- Thumbnail images appear here -->
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px;">
+      <button onclick="clearScannedPages()" class="btn btn-secondary btn-sm">Reset</button>
+      <div style="display:flex;gap:10px;">
+        <button onclick="stopCamera(); closeModal('scan-pdf-modal')" class="btn btn-secondary">Cancel</button>
+        <button onclick="compileScannedToPDF()" class="btn btn-primary" id="btn-compile-pdf">Compile into PDF</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}

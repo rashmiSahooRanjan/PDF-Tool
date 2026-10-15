@@ -1,0 +1,359 @@
+# MASTER PROJECT SPECIFICATION: DOCUFLEX
+
+## 1. Project Title
+
+DocuFlex — All-in-One PDF Editor, Document Converter and PDF Utilities Platform.
+
+## 2. Project Objective
+
+Build a complete, functional, professional document-processing web application that allows users to upload PDFs and Office documents, edit PDF documents, convert files between supported formats, and download the processed files.
+
+The application must not depend on paid APIs, subscription-based conversion services, cloud AI APIs, or external conversion APIs.
+
+Use local Python libraries and locally installed open-source programs for all document-processing operations.
+
+Do not build only a static UI or prototype. Every displayed feature must work or be clearly marked as planned or unavailable.
+
+## 3. Required Technology Stack
+
+- Operating system: Windows during initial development.
+- Python: 3.10.
+- Backend: Flask.
+- Frontend: HTML5, CSS3 and vanilla JavaScript.
+- PDF rendering: PDF.js, bundled locally.
+- PDF processing: PyMuPDF, pypdf and pdf2docx.
+- PDF text/table extraction: pdfplumber.
+- Word documents: python-docx.
+- Excel files: openpyxl.
+- PowerPoint files: python-pptx.
+- Images: Pillow.
+- OCR: Tesseract OCR and pytesseract.
+- Office-to-PDF conversion: LibreOffice in headless mode.
+- Testing: pytest.
+- Database: None required for the initial version. Optional SQLite can be added later.
+
+Do not introduce React, Vue, Angular, Node.js, MongoDB or a paid API unless explicitly requested.
+
+Bundle frontend dependencies locally where possible. Do not require an internet connection for ordinary document-processing operations after installation.
+
+## 4. Core Module A: PDF Editor
+
+Implement a PDF workspace with:
+
+1. PDF upload and page preview.
+2. Page thumbnails and page navigation.
+3. Zoom in, zoom out, fit to page and fit to width.
+4. Add text at a selected page position.
+5. Add images to pages.
+6. Draw freehand annotations.
+7. Highlight, underline and strike through text regions.
+8. Add shapes and signatures.
+9. Add watermarks and page numbers.
+10. Rotate, reorder, extract, duplicate and delete pages.
+11. Merge multiple PDFs.
+12. Undo and redo supported editing operations.
+13. Save and download the edited PDF.
+
+Existing text editing is a priority. Implement a text-selection workflow that identifies text spans, displays their content and allows supported replacement.
+
+For existing text replacement:
+- Extract text spans, bounding boxes, font information and page coordinates.
+- Attempt to preserve the original font, size, colour and position.
+- Use a suitable installed font fallback when the original font is unavailable.
+- Do not silently claim that text has been fully removed if it remains recoverable underneath a cover.
+- When necessary, reconstruct the affected page region or use a clearly explained redaction workflow.
+- Warn users when complex layouts cannot be preserved reliably.
+
+Use PDF.js for viewing and browser interaction. Use a dedicated Python service for permanent PDF modifications.
+
+## 5. Core Module B: Document Conversion
+
+Implement these conversions:
+
+### PDF conversions
+- PDF to DOCX.
+- PDF to PPTX.
+- PDF to XLSX.
+- PDF to JPG.
+- PDF to JPEG.
+- PDF to PNG.
+- PDF to searchable PDF using OCR.
+
+### Office conversions
+- DOCX to PDF.
+- XLSX to PDF.
+- DOCX tables to XLSX.
+- Extract structured text and tables from Word documents for spreadsheet export.
+
+### Image conversions
+- JPG to PDF.
+- JPEG to PDF.
+- PNG to PDF.
+
+Use pdf2docx for supported PDF-to-Word conversions, pdfplumber and openpyxl for PDF tables, python-pptx for PowerPoint creation, PyMuPDF for rendering pages, Pillow for image processing, and LibreOffice for Office-to-PDF conversion.
+
+For PDF-to-PPTX, provide two strategies where practical:
+- Visual mode: place each rendered PDF page as a full-slide image.
+- Editable mode: reconstruct text and images as PowerPoint elements where feasible.
+
+For PDF-to-Excel, extract actual tables and preserve rows and columns where possible. If a PDF has no identifiable tables, provide a meaningful extraction result or a clear error.
+
+For DOCX-to-XLSX, extract tables into worksheets. If the document contains no tables, show a clear message instead of generating an empty spreadsheet.
+
+Use an explicit conversion registry so each supported source and destination format maps to the correct service.
+
+## 6. Core Module C: PDF Utilities
+
+Implement:
+- Merge PDFs.
+- Split PDFs by page ranges.
+- Extract selected pages.
+- Rotate pages.
+- Reorder pages.
+- Compress PDFs using safe, configurable options.
+- Add watermarks.
+- Add page numbers.
+- Protect PDFs with passwords where supported.
+- Remove password protection only when the user is authorized and provides the required credentials.
+- Display page count and basic document metadata.
+
+## 7. Core Module D: OCR
+
+Implement optional offline OCR with Tesseract.
+
+Features:
+- Extract text from scanned PDF pages.
+- Extract text from uploaded images.
+- Create searchable PDFs using an OCR text layer.
+- Allow OCR language selection based on installed language packs.
+- Show a helpful message if Tesseract or the required language data is missing.
+- Preserve the original document and let the user download OCR output separately.
+
+OCR-assisted editing of scanned documents must not be represented as perfect recovery of the original editable document.
+
+## 8. User Interface Requirements
+
+Create a polished, modern and responsive interface.
+
+Use a consistent design system with:
+- A top navigation bar.
+- A sidebar or clear module navigation.
+- A dashboard with tool cards.
+- A drag-and-drop upload area.
+- A file selection button.
+- File name, size and detected format.
+- Conversion format selector.
+- Conversion options appropriate to the selected format.
+- Progress indicators for long-running jobs.
+- Success, warning and error messages.
+- Download buttons for generated files.
+- A recent-jobs list stored locally only if implemented safely.
+- Responsive layouts for desktop, tablet and mobile.
+- Accessible labels, keyboard navigation and visible focus indicators.
+- Light and dark themes if feasible.
+
+Suggested dashboard categories:
+1. Edit PDF.
+2. PDF to Word.
+3. PDF to PowerPoint.
+4. PDF to Excel.
+5. PDF to JPG/JPEG/PNG.
+6. Word to PDF.
+7. Excel to PDF.
+8. Word to Excel.
+9. Image to PDF.
+10. Merge, split and compress PDF.
+11. OCR and scanned documents.
+
+Do not create buttons that have no implemented action. Disable unsupported operations and explain why they are unavailable.
+
+## 9. Backend Architecture
+
+Use a modular Flask application.
+
+Separate:
+- Application initialization.
+- Upload and download routes.
+- Editor routes.
+- Conversion routes.
+- PDF utility routes.
+- Document-processing services.
+- File validation.
+- Temporary-file management.
+- Security helpers.
+- Automated tests.
+
+Each service must have a clear input/output contract and raise understandable errors.
+
+Never execute arbitrary user-supplied Python, shell commands, macros or scripts.
+
+Use secure subprocess argument lists when calling LibreOffice. Never construct shell commands by concatenating user-supplied filenames.
+
+## 10. API Routes
+
+Implement and document endpoints such as:
+
+- GET /api/health
+- POST /api/upload
+- POST /api/convert
+- POST /api/pdf/merge
+- POST /api/pdf/split
+- POST /api/pdf/rotate
+- POST /api/pdf/compress
+- POST /api/pdf/edit
+- POST /api/pdf/ocr
+- GET /api/jobs/<job_id>
+- GET /api/download/<job_id>
+
+You may modify the route structure when a better design is justified, but keep all routes consistent with the frontend.
+
+Validate inputs, file types, file sizes, page numbers and conversion options. Use random job IDs rather than exposing filesystem paths.
+
+For lengthy conversions, use a job status mechanism and progress feedback. Do not block the interface while processing.
+
+## 11. Security and Privacy
+
+- Process files locally by default.
+- Do not send documents to external services.
+- Set configurable upload-size and page-count limits.
+- Validate file signatures as well as file extensions.
+- Generate safe internal filenames.
+- Prevent path traversal and arbitrary file access.
+- Keep uploads and outputs outside publicly accessible static directories.
+- Serve downloads only after checking the job identifier and file association.
+- Expire temporary files and clean up failed jobs.
+- Handle malformed, encrypted and corrupted documents gracefully.
+- Do not log document contents or sensitive personal information.
+- Never bypass password protection or PDF access restrictions without authorization.
+- Warn users that OCR, reconstruction and compression may affect document quality.
+- Document the limitations of temporary storage and local access.
+
+## 12. Project Structure
+
+Use this initial structure:
+
+DocuFlex/
+  app.py
+  config.py
+  requirements.txt
+  README.md
+  .gitignore
+  routes/
+  services/
+  utils/
+  templates/
+  static/css/
+  static/js/
+  static/vendor/pdfjs/
+  tests/
+  uploads/
+  outputs/
+
+Create additional modules where necessary. Keep code modular, documented and maintainable.
+
+## 13. Configuration and Dependencies
+
+Create a Python 3.10-compatible requirements.txt.
+
+Use compatible, tested dependency versions. Do not blindly install the newest versions or pin incompatible packages.
+
+Document external local prerequisites, especially:
+- LibreOffice.
+- Tesseract OCR.
+- Any locally bundled PDF.js assets.
+
+Provide clear checks for detecting missing prerequisites.
+
+Include a .gitignore that excludes virtual environments, temporary files, generated documents, credentials, caches and local configuration.
+
+Do not commit uploaded user documents or generated PDFs to source control.
+
+## 14. Testing Requirements
+
+Write automated tests for:
+- Health endpoint.
+- Valid and invalid file uploads.
+- File-size limits.
+- PDF-to-image conversion.
+- PDF merging and splitting.
+- PDF-to-Word conversion on a sample document.
+- PDF table extraction.
+- DOCX-to-PDF conversion when LibreOffice is installed.
+- Download permissions.
+- Unsupported conversion pairs.
+- Corrupt and password-protected PDFs.
+- Temporary-file cleanup.
+
+Generate small synthetic test documents locally. Do not use real private documents.
+
+After implementation, run the tests, fix failures and report any tests blocked by missing system dependencies.
+
+Verify that output files exist, have the expected format and can be reopened by the relevant parser.
+
+## 15. Development Phases
+
+Build in this order:
+
+Phase 1: Inspect the workspace, create the folder structure, virtual environment instructions, Flask application, configuration and basic responsive dashboard.
+
+Phase 2: Implement secure upload, file validation, job handling and download functionality.
+
+Phase 3: Implement PDF-to-image, image-to-PDF, merge, split and rotate.
+
+Phase 4: Implement PDF-to-Word, PDF-to-PowerPoint, PDF-to-Excel and Office-to-PDF.
+
+Phase 5: Implement Word-to-Excel table extraction, compression, watermarks and page numbers.
+
+Phase 6: Implement the PDF viewer and editing tools, then existing-text replacement with explicit limitations.
+
+Phase 7: Add optional offline OCR and searchable PDF generation.
+
+Phase 8: Integrate all features, write tests, fix errors and complete documentation.
+
+Do not generate every module as untested placeholder code. Implement and test each phase before proceeding.
+
+## 16. Deliverables
+
+Provide:
+1. Complete source code.
+2. requirements.txt.
+3. README.md with setup instructions.
+4. Exact Windows PowerShell commands to create and activate the virtual environment.
+5. Installation instructions for LibreOffice and Tesseract.
+6. Instructions to start the Flask server.
+7. A list of implemented and unimplemented features.
+8. Test results.
+9. Troubleshooting guidance.
+10. Instructions for running the application locally without an internet connection after dependencies are installed.
+
+## 17. Acceptance Criteria
+
+The project is ready for its first release when:
+- The application starts without import errors.
+- The dashboard loads and is responsive.
+- Users can upload supported documents.
+- Implemented conversion options produce valid downloadable files.
+- PDF merge, split and rotation work correctly.
+- The editor can save supported modifications.
+- Invalid inputs produce understandable errors.
+- Temporary files are cleaned up.
+- Automated tests pass, or documented dependency-related limitations remain.
+- No paid API or external conversion service is required.
+
+## 18. Instructions to the Coding Agent
+
+First inspect the existing workspace. If it is empty, create the project from scratch.
+
+Before writing extensive code, present a concise implementation plan and identify system prerequisites.
+
+Then implement Phase 1 and Phase 2, run the application, and verify them. Continue phase by phase.
+
+Use the integrated terminal to run commands and tests when authorized. Never claim a feature works unless you have implemented and tested it.
+
+When errors occur, inspect the traceback, identify the root cause, fix the code and rerun the relevant tests.
+
+If a dependency is incompatible with Python 3.10 or Windows, find a compatible alternative and document the decision.
+
+Do not replace a failed feature with a fake success message or a non-functional UI.
+
+The final goal is a working, maintainable, secure and privacy-conscious document-processing application that can be extended without rewriting the entire codebase.
