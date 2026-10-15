@@ -49,11 +49,12 @@ def create_app(config_class=Config):
         
     return app
 
+app = create_app()
+
 if __name__ == "__main__":
-    app = create_app()
     port = int(os.environ.get("PORT", 5000))
     print("==================================================")
-    print(f"[*] DocuFlex Platform starting at http://127.0.0.1:{port}")
+    print(f"[*] iLovePDF Pro platform starting at http://127.0.0.1:{port}")
     print("    Local document processing active. No cloud APIs.")
     print("==================================================")
     app.run(host="0.0.0.0", port=port, debug=Config.DEBUG)
