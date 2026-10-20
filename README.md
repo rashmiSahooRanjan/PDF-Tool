@@ -201,6 +201,12 @@ d:/PDF project/
 ```
 
 ---
+## 👨‍💻 Authors
+
+| Name                          | Role      |
+| ----------------------------- | --------- |
+| **Rashmi Ranjan Sahoo** | Developer |
+
 
 ## 🔒 Security & Privacy Guarantees
 - **Local Isolation:** Documents never leave your device.
